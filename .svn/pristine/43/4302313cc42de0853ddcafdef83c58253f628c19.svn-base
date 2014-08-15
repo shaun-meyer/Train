@@ -1,0 +1,182 @@
+--Locomotivation
+--Shaun Meyer
+
+with Ada.Text_IO;
+with Ada.Integer_Text_IO;
+with Ada.Characters.Handling;
+with Ada.IO_Exceptions;
+with Layout;
+with Layout.Search;
+
+
+procedure Dispatcher is
+
+   type Question_Number is (First, Second);
+--------------------------------------------------------------------------------
+   procedure Validate_Letter_Input (Letter   :    out Character;
+                                    Question : in     Question_Number) is
+
+      Continue : Boolean := False;
+
+   begin
+      --Loops until valid
+      --each loop checks validity
+      loop
+         Ada.Text_IO.Get (Letter);
+         Letter := Ada.Characters.Handling.To_Upper (Letter); --uppercase it
+         if (Letter = 'Y' or Letter = 'N' or Letter = 'Q')
+            and Question = First then
+            Continue := True;
+         elsif (Letter = 'Y' or Letter = 'N' or Letter = 'Q' or Letter = 'R')
+            and Question = Second then
+            Continue := True;
+         end if;
+
+         exit when Continue;
+
+         --If it didn't exit user entered bad input
+         if Question = First then
+            Ada.Text_IO.Put_Line ("Not a Valid Response. Please enter" &
+                                  " 'Y', 'N', or 'Q'");
+         else
+            Ada.Text_IO.Put_Line ("Not a Valid Response. " &
+                                  "Please enter 'Y', 'N', 'R' or 'Q'");
+         end if;
+         Ada.Text_IO.Skip_Line;
+
+      end loop;
+   end Validate_Letter_Input;
+--------------------------------------------------------------------------------
+   procedure Validate_Integer_Input (User_Instruction : in     String;
+                                     Low_End          : in     Integer;
+                                     High_End         : in     Integer;
+                                     Input_Value      :    out Integer) is
+   begin
+      loop
+         Ada.Text_IO.Put_Line (User_Instruction);
+         begin
+            Ada.Integer_Text_IO.Get (Input_Value);
+
+            if Low_End <= Input_Value and High_End >= Input_Value then
+               exit;
+            else
+               Ada.Text_IO.Put ("Input valid integer between ");
+               Ada.Integer_Text_IO.Put (Low_End, 1);
+               Ada.Text_IO.Put (" and ");
+               Ada.Integer_Text_IO.Put (High_End, 1);
+               Ada.Text_IO.Put_Line (" (inclusive).");
+            end if;
+
+         exception
+            when Ada.IO_Exceptions.Data_Error =>
+               Ada.Text_IO.Put_Line ("Enter an integer.");
+               Ada.Text_IO.Skip_Line;
+         end;
+      end loop;
+      Ada.Text_IO.New_Line;
+   end Validate_Integer_Input;
+   -----------------------------------------------------------------------------
+   package Block_IO is new Ada.Text_IO.Integer_IO(Layout.Block_ID);
+   package Turnout_IO is new Ada.Text_IO.Integer_IO(Layout.Turnout_ID);
+
+   Number_Of_Trains        : Integer;
+   Train_Type              : Integer;
+   Train_Starting_Block    : Integer;
+   Caboose_Starting_Block  : Integer;
+   Blocks_Beneath          : Layout.Search.Block_List(3);
+   Turnouts_Beneath        : Layout.Search.Turnout_List(10);
+   User_Response           : Character;
+   Success                 : Boolean;
+--TODO: Add in for loop to take data in for multiple trains
+begin
+   Validate_Integer_Input (
+      User_Instruction => "How many trains do you wish to run? (1, 2, or 3)",
+      Low_End          => 1,
+      High_End         => 3,
+      Input_Value      => Number_Of_Trains);
+
+
+   Ada.Text_IO.Put_Line ("The following locomotives are available");
+   Ada.Text_IO.New_Line (2);
+   Ada.Text_IO.Put_Line ("   Road Name              Model           Number");
+   Ada.Text_IO.Put_Line ("1  Burlington             EMD GP40        #187  ");
+   Ada.Text_IO.Put_Line ("2  Burlington Northern    EMD GP30        #2236 ");
+   Ada.Text_IO.Put_Line ("3  Burlington Northern    ALCO C-424      #4246 ");
+   Ada.Text_IO.Put_Line ("4  Delaware & Hudson      ALCO C-424      #451  ");
+   Ada.Text_IO.Put_Line ("5  Delaware & Hudson      Baldwin RF16    #1205 ");
+   Ada.Text_IO.Put_Line ("6  New York Central       Hudson 4-6-4    #5442 ");
+   Ada.Text_IO.Put_Line ("7  Santa Fe               GE U23B         #2150 ");
+   Ada.Text_IO.Put_Line ("8  Santa Fe               ALCO RS1        #2397 ");
+   Ada.Text_IO.Put_Line ("9  Santa Fe               ALCO S-2        #2352 ");
+   Ada.Text_IO.Put_Line ("10 Union Pacific          GE U23B         #542  ");
+   Ada.Text_IO.Put_Line ("11 Other");
+
+   Validate_Integer_Input (
+      User_Instruction => "Enter the line number from the above table" &
+                          " of the locomotive pulling train #1",
+      Low_End          => 1,
+      High_End         => 11,
+      Input_Value      => Train_Type);
+
+   Validate_Integer_Input (
+      User_Instruction => "On which block is the locomotive" &
+                          " pulling train 1 located?",
+      Low_End          => 1,
+      High_End         => 40,
+      Input_Value      => Train_Starting_Block);
+
+   Validate_Integer_Input (
+      User_Instruction => "On which block is the caboose (or observation" &
+                          " car) for train 1 located?",
+      Low_End          => 1,
+      High_End         => 40,
+      Input_Value      => Caboose_Starting_Block);
+
+   --TODO: call a function that will calculate whether or not the caboose and
+   --	train are within 3 blocks of each other.
+   Layout.Search.Blocks_Beneath(Loco     => Layout.Block_ID(Train_Starting_Block),
+                                Caboose  => Layout.Block_ID(Caboose_Starting_Block),
+                                Blocks   => Blocks_Beneath,
+                                Turnouts => Turnouts_Beneath,
+                                Success  => Success);
+   -- if (Train_Distance <= 0 OR Train_Distance > 3) then
+   --	Ask if they want to reenter the information
+   Ada.Text_IO.Put_Line("Blocks Found");
+
+   Ada.Text_IO.Put_Line("");
+   for Count in Blocks_Beneath.Items'First .. Blocks_Beneath.Size loop
+      Block_IO.Put (Item => Blocks_Beneath.Items(Count).Block);
+   end loop;
+   Ada.Text_IO.Put_Line("");
+   Ada.Text_IO.Put_Line("Turnouts Found");
+   for Count in Turnouts_Beneath.Items'First .. Turnouts_Beneath.Size loop
+      Turnout_IO.Put (Item => Turnouts_Beneath.Items(Count).Turnout);
+   end loop;
+   Ada.Text_IO.Put_Line("");
+   if not Success then
+
+      Ada.Text_IO.Put_Line ("Would you like to reenter the information?");
+      Ada.Text_IO.Put_Line ("    Y = yes, I wish to reenter" &
+                            " the train's location.");
+      Ada.Text_IO.Put_Line ("    N = no, I wish to restart " &
+                            "set up from the beginning.");
+      Ada.Text_IO.Put_Line ("    Q = no, I wish to terminate" &
+                            " this operating session.");
+
+      Validate_Letter_Input (Letter   => User_Response,
+                             Question => First);
+
+
+   else
+
+      Ada.Text_IO.Put_Line ("Is this information correct? Enter one of the following:");
+      Ada.Text_IO.Put_Line ("    Y = yes, the information for this train is correct.");
+      Ada.Text_IO.Put_Line ("    N = no, I wish to enter different information for this train.");
+      Ada.Text_IO.Put_Line ("    R = no, I wish to restart setting up from the beginning.");
+      Ada.Text_IO.Put_Line ("    Q = no, I wish to terminate this operating session.");
+
+      Validate_Letter_Input (Letter   => User_Response,
+                             Question => Second);
+
+   end if;
+end Dispatcher;

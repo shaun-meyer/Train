@@ -1,0 +1,23 @@
+--Locomotivation
+--Mike Miller
+
+Test Plan for the ADC
+
+Special Equipment : Hand Controller
+Goal              : Make sure the ADC body reads the correct value From the hand controller
+Setup             : None
+Implementation    : run adc_test.adb
+Expected Results  : depending on the amount the knob is turned the the value will be outputed to the screen between between 0 and +5 volts
+Testing Method    : This is not an exhaustive test. we are testing the edge cases.
+Edge Cases        : knob fully to the left
+		    knob fully to the right
+		    knob in the middle
+		    Knob half way between middle and left
+		    Knob half way between middle and right
+
+knob location		 	expected Volt output (roughly)
+fully left			 0    volts
+fully right			 5    volts
+middle				 2.5  volts
+between left and middle		 1.25 volts
+between right and middle	 3.75 volts

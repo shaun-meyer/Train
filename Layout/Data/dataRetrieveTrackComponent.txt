@@ -1,0 +1,90 @@
+Name              : Mike Miller
+Special Equipment : None
+Goal              : correct data is returned using Retrieve_Terminator
+Setup             : None
+Implementation    : Run test_layout.adb 
+Expected Results  : Expect all Block id's and polarity inputed into Retrieve_Terminator return expected Terminator_Type
+Exhaustive Testing: This is an exhaustive test. there are 80 tests for this
+
+Data              :
+BlockId	polarity 	TrackComponent
+1 	Normal 		Block
+2 	Normal 		Turnout
+3 	Normal 		Block
+4 	Normal 		Block
+5 	Normal 		Block
+6 	Normal 		Block
+7 	Normal 		Block
+8 	Normal 		Turnout
+9 	Normal 		Block
+10 	Normal 		Turnout
+11 	Normal 		Block
+12 	Normal 		Block
+13 	Normal 		Turnout
+14 	Normal 		Block
+15 	Normal 		Turnout
+16 	Normal 		Block
+17 	Normal 		Block
+18 	Normal 		Turnout
+19 	Normal 		Block
+20 	Normal 		Block
+21 	Normal 		Turnout
+22 	Normal 		Block
+23 	Normal 		Block
+24 	Normal 		Turnout
+25 	Normal 		Block
+26 	Normal 		Block
+27 	Normal 		Block
+28 	Normal 		Block
+29 	Normal 		Block
+30 	Normal 		Block
+31 	Normal 		Turnout
+32 	Normal 		Block
+33 	Normal 		Block
+34 	Normal 		Block
+35 	Normal 		Block
+36 	Normal 		Block
+37 	Normal 		Block
+38 	Normal 		Block
+39 	Normal 		Block
+40 	Normal 		Block
+1 	Reversed	Block
+2 	Reversed 	Turnout
+3 	Reversed 	Block
+4 	Reversed 	Turnout
+5 	Reversed 	Block
+6 	Reversed 	Turnout
+7 	Reversed 	Turnout
+8 	Reversed 	Turnout
+9 	Reversed 	Block
+10	Reversed 	Turnout
+11	Reversed 	Block
+12	Reversed 	Block
+13	Reversed 	Block
+14	Reversed 	Block
+15	Reversed 	Turnout
+16	Reversed 	Block
+17	Reversed 	Turnout
+18	Reversed 	Turnout
+19	Reversed 	Block
+20	Reversed 	Turnout
+21	Reversed 	Turnout
+22	Reversed 	Block
+23	Reversed 	Block
+24	Reversed 	Block
+25	Reversed 	Block
+26	Reversed 	Turnout
+27	Reversed 	Block
+28	Reversed 	Block
+29	Reversed 	Block
+30	Reversed 	Block
+31	Reversed 	Turnout
+32	Reversed 	Block
+33	Reversed 	Block
+34	Reversed 	Block
+35	Reversed 	Turnout
+36	Reversed 	Block
+37	Reversed 	Block
+38 	Reversed 	Block
+39 	Reversed 	Block
+40 	Reversed 	Deadend

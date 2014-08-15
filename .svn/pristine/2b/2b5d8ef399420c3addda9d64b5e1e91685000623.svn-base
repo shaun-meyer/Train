@@ -1,0 +1,69 @@
+--Locomotivation
+--James Vannordstrand
+with Common_Units;
+with Port_IO;
+package body ADC is
+
+   use Common_Units;  -- For operators on Volts
+
+   type Address_Array is array (Channel_Number'Range) of Port_IO.Address_Range;
+   -- Addresses of the ADC's two registers (memory mapped I/O)
+   CSR_Address  : constant Address_Array := (0 => To_Address (16#240#),
+                                             1 => To_Address (16#242#));
+   --Where do we get the addresses?
+
+   --Do we need this CSR?
+   type CSR_Rec is  -- Type for the control status register
+      record
+         Start      : Boolean;
+         Done       : Boolean;
+         Int_Enable : Boolean;
+         Channel    : Channel_Number;
+      end record;
+
+   for CSR_Rec use
+      record
+         Start      at 0 range 0 .. 0;
+         Done       at 0 range 1 .. 1;
+         Int_Enable at 0 range 2 .. 2;
+         Channel    at 0 range 11 .. 15;
+      end record;
+
+   for CSR_Rec'Size use 16;
+   for CSR_Rec'Bit_Order use System.Low_Order_First;
+
+   type Data_Type is range 0 .. 4095; -- for the data register
+   for Data_Type'Size use 16;
+
+   -- The two device registers
+
+   Control_Status_Register : CSR_Rec;
+   for Control_Status_Register'Address use CSR_Address;
+   for Control_Status_Register'Size use 16;
+   pragma Volatile (Control_Status_Register);
+
+   Data_Register : Data_Type;
+   for Data_Register'Address use Data_Address;
+   for Data_Register'Size use 16;
+   pragma Volatile (Data_Register);
+
+   ---------------------------------------------
+   procedure Read (Channel : in     Channel_Number;
+                   Value   :    out Input_Volts) is
+      Read_Word : Port_IO.Word;
+   begin
+      --Reading in word from board
+      Read_Word := Port_IO.In_Word (Address => CSR_Address (Channel));
+      --How do we use the byte as a voltage?
+      -- Wait until the conversion is complete
+      delay 0.1;
+
+      -- Convert whole number data to a fixed point voltage
+      if Value >= 0 then
+         (Value * 409.5) + 2048;
+      else
+         (Value + 5) / 409.5;
+      end if;
+   end Read;
+
+end ADC;

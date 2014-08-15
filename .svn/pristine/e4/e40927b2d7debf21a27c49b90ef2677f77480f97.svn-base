@@ -1,0 +1,74 @@
+--Locomotivation
+--Mike Miller
+
+Test Plan for the Layout
+
+Special Equipment : None
+Goal              : Make Sure the New Functions For Layout work correctly
+Setup             : None
+Implementation    : run adc_test_layout.adb
+Testing Method    : This is not an exhaustive test. we are testing the edge cases. except for the oposite function they are exhaustive.
+
+function Opposite 
+Testing Values		Expected Results 
+Normal			Reversed
+Reversed		Normal
+
+function Opposite (Direction : in Turnout_Direction)
+Testing Values		Expected Results
+Left			Right
+Right			Left
+
+procedure Get_Block_IDs_With_Hall_Sensor 
+Testing Values		Expected Results
+1			1	11
+10			1	2
+9			2	13	
+26			28	24
+
+procedure Is_Forced_Turnout 
+Testing Values		Expected Results
+1 Normal		True
+1 Reversed		False
+2 Normal		False
+37 Normal		False
+2 Reversed		False
+
+procedure Change_Forced_Turnout 
+Testing Values		Expected Results
+1 Normal		3 Right
+13 Reversed		1 Left
+12 Normal		1 Right
+ 
+
+Funtion Is_Joint_Turnout 
+Testing Values		Expected Results
+left 3			True
+Right 3			False
+
+procedure Retrieve_Joint_Turnout
+Testing Values		Expected Results
+left 3			2
+left 2			3
+right 6			7
+right 7			6
+
+procedure Retrieve_Cross_Blocks (Block        : in Block_ID;
+                                 Cross_Blocks : out Block_ID_Array);
+Testing Values		Expected Results
+8			29
+29			8
+24			30
+30			24
+39			23
+23			39
+1			None
+
+procedure Next_Choice_Turnout 
+Testing Values		Expected Results
+11 Normal		6
+2  Normal		6
+11 Reversed		13
+
+
+

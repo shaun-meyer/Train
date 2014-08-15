@@ -1,0 +1,27 @@
+-- Locomotivation
+-- Mike Miller
+
+with Common_Units;
+package ADC is
+-- Specification for CIO_DDA08/Jr board
+
+   type    Channel_Number    is range 0 .. 7;
+   type    Digital_Input_Bit is range 0 .. 63;
+   type    Digital_Output_Bit is range 0 .. 63;
+
+   procedure Write (Channel : in Channel_Number;
+                    Bit     : in Digital_Output_Bit);
+   -- This procedure writes a specified bit value on the specified channel
+   -- Precondition : The board is writeable
+   -- Postcondition : Data is writen to the board
+
+   procedure Read (Channel : in  Channel_Number;
+                   Bit     : out  Digital_Input_Bit);
+   -- This procedure reads the bit from the specified channel
+   -- Precondition : There must be bit values at the specified channel
+   -- Postcondition : Bit values are returned
+private
+   for Channel_Number'Size use 8;
+   for Digital_Input_Bit'Size use 64;
+   for Digital_Output_Bit'Size use 64;
+end ADC;

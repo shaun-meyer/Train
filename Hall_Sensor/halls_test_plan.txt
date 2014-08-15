@@ -1,0 +1,35 @@
+--Locomotivation
+--Shaun Meyer
+
+Test Plan for the Hall Sensor
+
+Special Equipment : Hall Sensor, magnet
+Goal              : Make sure that a sensor is triggered by a magnet, and that the program can disable and enable interrupts sent from the sensor
+Setup             : Initialize the hall sensors
+Implementation    : run halls_test.adb
+Testing Method    : This is not an exhaustive test. We will be testing all states for a single sensor. 
+			To test enabling of interrupts, we will be supplying a simple procedure that prints to the screen
+
+Is_Triggered
+Magnet is off of sensor => False
+Magnet is on sensor     => True
+Remove magnet again     => False
+
+Enable
+Call enable procedure
+Magnet is on sensor     => Callback procedure is called
+                           True
+Magnet is off sensor    => False
+Return magnet to sensor => Callback procedure is called
+                           True
+
+Disable
+Call disable procedure
+Magnet is on sensor     => No procedure called
+                           True
+Magnet is off sensor    => No procedure called
+                           False
+Return magnet to sensor => No procedure called
+                           True
+
+We will apply this test to numerous different sensors.

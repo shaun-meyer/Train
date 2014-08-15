@@ -1,0 +1,23 @@
+-- Locomotivation
+-- Shaun Meyer
+
+with Common_Units;
+package DAC is
+-- Specification the CIO-DDA06/Jr board
+
+   type    Channel_Number is range 0..5;
+   type    Digital_IO_Bits is range 0..23;
+
+   procedure Write (Channel : in Channel_Number;
+                    Bit     : in Digital_IO_Bits);
+   -- This procedure writes a specified bit value on the specified channel
+   -- Precondition : The board is writeable
+   -- Postcondition : Data is written to the board
+
+   procedure Read  (Channel : in Channel_Number;
+                    Bit     : out Digital_IO_Bits);
+   -- This procedure reads the bit from the specified channel
+   -- Precondition : There must be bit values at the specified channel
+   -- Postcondition : Bit values are returned
+
+end DAC;

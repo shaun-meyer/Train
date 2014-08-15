@@ -1,0 +1,48 @@
+--Locomotivation
+--Shaun Meyer
+
+Test Plan for the Motor
+
+Special Equipment : Turnouts, 82C55 Chip
+Goal              : Make sure the Motor moves the correct turnouts and sense bit works correctly
+Setup             : None
+Implementation    : run motor_test.adb
+Testing Method    : This is not an exhaustive test. we are testing the edge cases.
+
+Set_Position
+Turnout # 	Direction		Expected Result (Turnout Direction)
+1		Left			Left
+1		Right			Right
+8		Left			Left
+8		Right			Right
+9		Left			Left
+9		Right			Right
+16		Left			Left
+16		Right			Right
+17		Left			Left
+17		Right			Right
+24		Left			Left
+24		Right			Right
+25		Left			Left
+25		Right			Right
+26		Left			Left
+26		Right			Right
+
+In_Position
+Turnout # 	Last Command		Expected Result (while stationary. if still moving Expected Result is False)
+1		Left			True
+1		Right			True
+8		Left			True
+8		Right			True
+9		Left			True
+9		Right			True
+16		Left			True
+16		Right			True
+17		Left			True
+17		Right			True
+24		Left			True
+24		Right			True
+25		Left			True
+25		Right			True
+26		Left			True
+26		Right			True

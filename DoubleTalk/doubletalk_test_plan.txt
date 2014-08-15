@@ -1,0 +1,16 @@
+--Locomotivation
+--Mike Miller
+
+Test Plan for the Double Talk
+
+Special Equipment : doubleTalk hardware
+Goal              : make sure dobleTalk.adb performs correctly and output sounds correct
+Setup             : none
+Implementation    : run doubletalk_test.adb on marte
+Expected Results  : we hear all voices and their correct output
+Testing Method    : Not an exhaustive test. testing edge cases
+Edge Cases        : (1) overfill the queue. 
+                    (2) test all the different voices.
+
+
+

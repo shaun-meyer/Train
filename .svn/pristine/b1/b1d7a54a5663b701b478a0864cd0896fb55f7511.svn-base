@@ -1,0 +1,238 @@
+-- locomotivation
+-- Mike Miller
+with Ada.Text_IO;
+with Layout;
+use type Layout.Terminator_Type;
+use type Layout.Turnout_ID;
+use type Layout.Block_ID;
+use type Layout.Hall_ID;
+
+procedure Test_Layout is
+   package Block_Polarity_IO is new Ada.Text_IO.Enumeration_IO
+     					(Enum => Layout.Block_Polarity);
+   package Terminator_Type_IO is new Ada.Text_IO.Enumeration_IO
+     					(Enum => Layout.Terminator_Type);
+   package Turnout_Direction_IO is new Ada.Text_IO.Enumeration_IO
+     					(Enum => Layout.Turn_Choice);
+   package Boolean_IO is new Ada.Text_IO.Enumeration_IO (Enum => Boolean);
+   package Block_IO is new Ada.Text_IO.Integer_IO (Layout.Block_ID);
+   package Turnout_IO is new Ada.Text_IO.Integer_IO (Layout.Turnout_ID);
+   package Hall_ID_IO is new Ada.Text_IO.Integer_IO (Layout.Hall_ID);
+
+
+   File               : Ada.Text_IO.File_Type;
+   trackComponentFile : constant
+     String := "dataTests/retrieveTrackComponent.txt";
+   TurnoutFile        : constant
+     String := "dataTests/retrieveTurnoutNumber.csv";
+   nextBlockFIle      : constant
+     String := "dataTests/retrieveBlockNumber.txt";
+   HallIDFIle         : constant
+     String := "dataTests/retrieveHallId.txt";
+   TurnoutBlockFile   : constant
+     String := "dataTests/retrieveTurnoutBlocks.txt";
+   ReversingPointFile : constant
+     String := "dataTests/retrieveReversingPoint.txt";
+   Block_Number       : Layout.Block_ID;
+   Next_Block_Number  : Layout.Block_ID;
+   Actual_Next_Block  : Layout.Block_ID;
+   Direction          : Layout.Block_Polarity;
+   Terminator         : Layout.Terminator_Type;
+   ActualTerminator   : Layout.Terminator_Type;
+   Turnout            : Layout.Turnout_ID;
+   ActualTurnout      : Layout.Turnout_ID;
+   Way                : Layout.Turn_Choice;
+   Hall_Sensor_ID     : Layout.Hall_ID;
+   Actual_Hall_ID     : Layout.Hall_ID;
+   ActualBoolean      : Boolean;
+   TestBoolean        : Boolean;
+
+
+begin
+   -- next Track Component
+   -- test for what track component follows a block
+   --there are 80 tests for this
+   Ada.Text_IO.Put_Line ("Retrieve_Terminator Test");
+   Ada.Text_IO.Open (File => File,
+                    Mode => Ada.Text_IO.In_File,
+                    Name => trackComponentFile);
+   -- read data in from retrieveTrackComponent.txt
+   while not (Ada.Text_IO.End_Of_File (File)) loop
+      Block_IO.Get (Item => Block_Number,
+                 File => File);
+      Block_Polarity_IO.Get (Item => Direction,
+                          File => File);
+      Terminator_Type_IO.Get (Item => Terminator,
+                           File => File);
+      ActualTerminator := Layout.Retrieve_Terminator (Block     => Block_Number,
+                                                  Direction => Direction);
+      -- output Fail Data
+      if ActualTerminator /= Terminator then
+         Ada.Text_IO.Put ("Test Data: Block_Number = ");
+         Block_IO.Put (Block_Number);
+         Ada.Text_IO.Put (" Polarity = ");
+         Block_Polarity_IO.Put (Direction);
+         Ada.Text_IO.Put (" Terminator_Type = ");
+         Terminator_Type_IO.Put (Terminator);
+         Ada.Text_IO.Put_Line (" test failed");
+      end if;
+   end loop;
+   Ada.Text_IO.Close (File => File);
+   Ada.Text_IO.Put_Line ("end of Retrieve_Terminator Test");
+-------------------------------------------------------------------------------
+-- retrieve Turnout_ID
+-- test Turnout_ID is returned
+--there are 23 tests for this
+   Ada.Text_IO.Put_Line ("Retrieve_Turnout_ID Test");
+   Ada.Text_IO.Open (File => File,
+                    Mode => Ada.Text_IO.In_File,
+                    Name => TurnoutFile);
+   -- read data in from retrieveTurnoutNumber.csv
+   while not (Ada.Text_IO.End_Of_File (File)) loop
+      Block_IO.Get (Item => Block_Number,
+                 File => File);
+      Block_Polarity_IO.Get (Item => Direction,
+                          File => File);
+      Turnout_IO.Get (Item => Turnout,
+                   File => File);
+      ActualTurnout := Layout.Retrieve_Turnout_ID (Block     => Block_Number,
+                                               Direction => Direction);
+      -- output fail data
+      if ActualTurnout /= Turnout then
+         Ada.Text_IO.Put ("Test Data: Block_Number = ");
+         Block_IO.Put (Block_Number);
+         Ada.Text_IO.Put (" Polarity = ");
+         Block_Polarity_IO.Put (Direction);
+         Ada.Text_IO.Put (" Turnout = ");
+         Turnout_IO.Put (Turnout);
+         Ada.Text_IO.Put_Line ("test failed");
+      end if;
+   end loop;
+   Ada.Text_IO.Close (File => File);
+   Ada.Text_IO.Put_Line ("end of Retrieve_Turnout_ID Test");
+-------------------------------------------------------------------------------
+-- retrieve Next_Block_ID
+-- test which block_id is returned
+--there are 56 tests for this
+   Ada.Text_IO.Put_Line ("Retrieve_Next_Block_ID Test");
+   Ada.Text_IO.Open (File => File,
+                    Mode => Ada.Text_IO.In_File,
+                    Name => nextBlockFIle);
+   -- read data in from retrieveBlockNumber.txt
+   while not (Ada.Text_IO.End_Of_File (File)) loop
+      Block_IO.Get (Item => Block_Number,
+                 File => File);
+      Block_Polarity_IO.Get (Item => Direction,
+                          File => File);
+      Block_IO.Get (Item => Next_Block_Number,
+                 File => File);
+      Actual_Next_Block := Layout.Retrieve_Next_Block_ID
+        				(Block     => Block_Number,
+                                         Direction => Direction);
+      -- output fail data
+      if Actual_Next_Block /= Next_Block_Number then
+         Ada.Text_IO.Put ("Test Data: Block_Number = ");
+         Block_IO.Put (Block_Number);
+         Ada.Text_IO.Put (" Polarity = ");
+         Block_Polarity_IO.Put (Direction);
+         Ada.Text_IO.Put (" Next_Block_Number = ");
+         Block_IO.Put (Next_Block_Number);
+         Ada.Text_IO.Put (" ");
+         Block_IO.Put (Actual_Next_Block);
+         Ada.Text_IO.Put_Line ("test failed");
+      end if;
+   end loop;
+   Ada.Text_IO.Close (File => File);
+   Ada.Text_IO.Put_Line ("end of Retrieve_Next_Block_ID Test");
+--------------------------------------------------------------------------------
+-- retrieve Turnout_Block
+-- test which block_id is returned
+--there are 52 tests for this
+   Ada.Text_IO.Put_Line ("Retrieve_Turnout_Block_ID Test");
+   Ada.Text_IO.Open (File => File,
+                    Mode => Ada.Text_IO.In_File,
+                    Name => TurnoutBlockFile);
+   -- read data from retrieveTurnoutBlocks.txt
+   while not (Ada.Text_IO.End_Of_File (File)) loop
+      Turnout_Direction_IO.Get (Item => Way,
+                             File => File);
+      Turnout_IO.Get (Item => Turnout,
+                   File => File);
+      Block_IO.Get (Item => Next_Block_Number,
+                 File => File);
+      Actual_Next_Block := Layout.Retrieve_Turnout_Block_ID (Direction => Way,
+                                                         Turnout   => Turnout);
+      -- output fail data
+      if Actual_Next_Block /= Next_Block_Number then
+         Ada.Text_IO.Put ("Test Data: Way = ");
+         Turnout_Direction_IO.Put (Way);
+         Ada.Text_IO.Put (" Turnout = ");
+         Turnout_IO.Put (Turnout);
+         Ada.Text_IO.Put (" Next_Block_Number = ");
+         Block_IO.Put (Next_Block_Number);
+         Ada.Text_IO.Put_Line (" test failed");
+      end if;
+   end loop;
+   Ada.Text_IO.Close (File => File);
+   Ada.Text_IO.Put_Line ("end of Retrieve_Turnout_Block_ID Test");
+--------------------------------------------------------------------------------
+-- retrieve reversing point
+-- test if a hallid is a reversing point
+--there are 51 tests for this
+   Ada.Text_IO.Put_Line ("Is_Reversing_Point Test");
+   Ada.Text_IO.Open (File => File,
+                    Mode => Ada.Text_IO.In_File,
+                    Name => ReversingPointFile);
+   -- read data from retrieveReversingPoint.txt
+   while not (Ada.Text_IO.End_Of_File (File)) loop
+      Hall_ID_IO.Get (Item => Hall_Sensor_ID,
+                   File => File);
+      Boolean_IO.Get (Item => TestBoolean,
+                   File => File);
+      ActualBoolean := Layout.Is_Reversing_Point (Sensor => Hall_Sensor_ID);
+      -- output fail data
+      if ActualBoolean /= TestBoolean then
+         Ada.Text_IO.Put ("Test Data: Hall_Sensor_ID = ");
+         Hall_ID_IO.Put (Hall_Sensor_ID);
+         Ada.Text_IO.Put (" TestBoolean = ");
+         Boolean_IO.Put (TestBoolean);
+         Ada.Text_IO.Put_Line ("test failed");
+      end if;
+   end loop;
+   Ada.Text_IO.Close (File => File);
+   Ada.Text_IO.Put_Line ("end of Is_Reversing_Point Test");
+-------------------------------------------------------------------------------
+-- retrieve Hall ID
+-- tests which hall id is connecting 2 blocks
+--there are 51 tests for this
+   Ada.Text_IO.Put_Line ("Retrieve_Hall_ID Test");
+   Ada.Text_IO.Open (File => File,
+                    Mode => Ada.Text_IO.In_File,
+                    Name => HallIDFIle);
+   -- read data from retrieveHallId.txt
+   while not (Ada.Text_IO.End_Of_File (File)) loop
+      Block_IO.Get (Item => Block_Number,
+                 File => File);
+      Block_IO.Get (Item => Next_Block_Number,
+                 File => File);
+      Hall_ID_IO.Get (Item => Hall_Sensor_ID,
+                   File => File);
+      Actual_Hall_ID := Layout.Retrieve_Hall_ID (Current_Block => Block_Number,
+                                            Next_Block    => Next_Block_Number);
+      -- display Fail Data
+      if Actual_Hall_ID /= Hall_Sensor_ID then
+         Ada.Text_IO.Put ("Test Data: Block_Number = ");
+         Block_IO.Put (Block_Number);
+         Ada.Text_IO.Put (" Next_Block_Number = ");
+         Block_IO.Put (Next_Block_Number);
+         Ada.Text_IO.Put (" Hall_Sensor_ID = ");
+         Hall_ID_IO.Put (Hall_Sensor_ID);
+         Ada.Text_IO.Put_Line ("test failed");
+      end if;
+   end loop;
+   Ada.Text_IO.Close (File => File);
+   Ada.Text_IO.Put_Line ("end of Retrieve_Hall_ID Test");
+
+end Test_Layout;
+
+-------------------------------------------------------------------------------

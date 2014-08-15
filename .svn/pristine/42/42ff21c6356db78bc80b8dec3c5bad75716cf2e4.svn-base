@@ -1,0 +1,24 @@
+--Locomotivation
+--James Vannordstrand
+
+Test Plan for the Dallee Sound Driver
+
+Special Equipment : Dallee Sound Driver
+Goal              : Checking for bells and horns on the train
+Setup             : None
+Implementation    : run dallee_test.adb
+Expected Results  : depending on the device chosen it either makes a bell noise or a horn noise, this will be a non exhaustive test, testing edge cases.
+
+Device Number	Command	 	expected Sound output
+1		Horn		Horn from Device 1
+2		Horn		Horn from Device 2
+3		Horn		Horn from Device 3
+1		Bell		Bell from Device 1
+2		Bell		Bell from Device 2
+3		Bell		Bell from Device 3
+1               Bell, Horn      Bell and Horn from Device 1
+2               Bell, Horn      Bell and Horn from Device 2
+3               Bell, Horn      Bell and Horn from Device 3
+1,2,3           Bell, Horn      Bell and Horn from all Devices
+
+

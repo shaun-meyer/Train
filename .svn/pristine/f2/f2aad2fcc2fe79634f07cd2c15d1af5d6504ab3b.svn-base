@@ -1,0 +1,83 @@
+--Locomotivation
+--James Vannordstrand
+with Ada.Unchecked_Conversion;
+with Port_IO; use type Port_IO.Address_Range;
+with System;
+with Interfaces; use Interfaces;
+package body ADC is
+
+   BASE : constant Port_IO.Address_Range := 16#260#;
+
+   type CSR_Rec is  -- Type for the control status register
+      record
+         Channel   : Channel_Number;
+         EOC       : Boolean;
+      end record;
+
+   for CSR_Rec use
+      record
+         Channel    at 0 range 0 .. 2;
+         EOC        at 0 range 7 .. 7;
+      end record;
+
+   for CSR_Rec'Size use 8;
+   for CSR_Rec'Bit_Order use System.Low_Order_First;
+   pragma Volatile (CSR_Rec);
+
+
+   function To_Byte is new Ada.Unchecked_Conversion
+     (Source => CSR_Rec,
+      Target => Port_IO.Byte);
+
+   --------------------------------------------------------------------------
+   protected body ADC_Interrupt is
+      entry Read (Channel : in     Channel_Number;
+                  Value   :    out Output_Volts) when not Busy is
+         Control_Status_Register : CSR_Rec;
+
+         Out_Byte        : Port_IO.Byte;
+      begin
+         Control_Status_Register := (Channel => Channel,
+                                     EOC     => True);
+         Out_Byte := To_Byte (Control_Status_Register);
+         Port_IO.Out_Byte (Address => BASE + 2,
+                           Data    => Out_Byte);
+         Port_IO.Out_Byte (Address => BASE + 1,
+                           Data    => 0);
+         Busy := True;
+         requeue Wait_For_Completion;
+      end Read;
+      -------------------------------------------------------------------------
+      procedure Handler is
+      begin
+         Conversion_Complete := True;
+      end Handler;
+      -------------------------------------------------------------------------
+      entry Wait_For_Completion (Channel : in Channel_Number;
+                                 Value   : out Output_Volts)
+        when Conversion_Complete is
+	 pragma Unreferenced (Channel);
+         In_Word         : Port_IO.Word;
+         Bit_Value       : Unsigned_16;
+      begin
+         Busy := False;
+         Conversion_Complete := False;
+
+         In_Word := Port_IO.In_Word (Address => BASE);
+         Bit_Value := Shift_Right
+           (Value  => Unsigned_16 (In_Word),
+            Amount => 4);
+         -- Convert whole number data to a fixed point voltage
+         Value := Volts (Bit_Value) / 409.5 - 5.0;
+      end Wait_For_Completion;
+
+   end ADC_Interrupt;
+-------------------------------------------------------------------------------
+   procedure Read (Channel : in     Channel_Number;
+                   Value   :    out Output_Volts) is
+   begin
+      ADC_Interrupt.Read (Channel => Channel,
+                          Value   => Value);
+   end Read;
+end ADC;
+-- took out second read for now need to handle multiplexer error

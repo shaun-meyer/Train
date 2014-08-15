@@ -1,0 +1,99 @@
+--Locomotivation
+--James Vannordstrand
+
+package Layout is
+   pragma Pure (Layout);
+
+   type Block_Polarity is (Normal, Reversed);
+
+   type Turnout_ID is range 1 .. 26;
+
+   type Block_ID is range 1 .. 40;
+
+   type Hall_ID is range 1 .. 51;
+
+   type Terminator_Type is (Block, Deadend, Turnout);
+
+   type Turn_Choice is (Left, Right, Common);
+
+   subtype Turnout_Direction is Turn_Choice range Left .. Right;
+
+
+   function Retrieve_Terminator  (Block      : in Block_ID;
+                                  Direction  : in Block_Polarity)
+                                  return Terminator_Type;
+   --This procedure gets the type of track componant that the block leads to
+   --in the specified direction
+   --Precondition  : None
+   --Postcondition : Terminator is the Terminator_Type at the end of a block
+
+   function Retrieve_Turnout_ID (Block     : in Block_ID;
+                                 Direction : in Block_Polarity)
+                                 return Turnout_ID;
+   --This procedure gets the number of the turnout given a block and a polarity
+   --Precondition  : Must be a turnout on the block in the given direction
+   --Postcondition : Get turnout number
+
+   function Retrieve_Next_Block_ID (Block      : in Block_ID;
+                                    Direction  : in Block_Polarity)
+                                    return Block_ID;
+   --This procedure gets the next block number given a block
+   --precondition  : Must be a block on the end of current block given direction
+   --Postcondition : Retrieves next block id
+
+   function Retrieve_Turnout_Block_ID (Direction : in Turnout_Direction;
+                                       Turnout   : in Turnout_ID)
+                                       return Block_ID;
+   --This procedure gets the specified block number of the direction specified
+   --on a turnout
+   --Precondition  : Must be a turnout
+   --Postcondition : Returned block id of specified direction on turnout
+
+   function Retrieve_Hall_ID (Current_Block   : in Block_ID;
+                              Next_Block      : in Block_ID) return Hall_ID;
+   --This procedure gets the sensor number and the block boundary
+   --Precondition  : Blocks must be connected
+   --Postcondition : Returns Hall Id of specified blocks
+
+   function Is_Reversing_Point (Sensor : in Hall_ID) return Boolean;
+   --Given a sensor we will get back a boolean stating whether or not a
+   --reversing point
+   --Precondition  : None
+   --Postcondition : Return if the sensor is a reversing point.
+
+   function Opposite (Direction : Block_Polarity) return Block_Polarity;
+   --Given a block polarity will return the opposite (Normal, Reversed)
+   --Precondition  : None
+   --Postcondition : Returns opposite block polarity
+
+   function Opposite (Direction : Turnout_Direction) return Turnout_Direction;
+   --Give a turnout direction returns the opposite (Left, Right)
+   --Precondition  : None
+   --Postconditino : Returns opposite turnout direction
+
+private
+
+   type Terminator_Block_ID_Rec (Terminator : Terminator_Type := Block) is
+      record
+         case Terminator is
+            when Block =>
+               Block : Block_ID;
+            when Turnout =>
+               Turnout : Turnout_ID;
+            when Deadend =>
+               null;
+         end case;
+      end record;
+
+   type Terminator_Array_Type is array (Block_ID, Block_Polarity) of
+      Terminator_Block_ID_Rec;
+
+   type Index_Type is (First, Second);
+   type Hall_ID_Array_Type is array (Hall_ID, Index_Type) of Block_ID;
+
+   type Reversing_Point_Array_Type is array (Hall_ID) of Boolean;
+
+   type Turnout_Block_ID_Array_Type is array (Turnout_ID, Turn_Choice) of
+     Block_ID;
+
+end Layout;

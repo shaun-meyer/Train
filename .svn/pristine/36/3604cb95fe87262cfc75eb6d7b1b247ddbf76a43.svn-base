@@ -1,0 +1,36 @@
+-- Locomotivation
+-- Shaun Meyer
+with Ada.Text_IO;
+with System.Storage_Elements; use System.Storage_Elements;
+package body Controller is
+
+   type Hand_Controller is
+      record
+         Red_Button       : Button_Type;
+         Black_Button     : Button_Type;
+         Direction_Switch : FB_Toggle_Type;
+         Turn_Switch      : LRC_Toggle_Type;
+      end record;
+
+   for Hand_Controller use
+      record
+         Red_Button       at 0 range 0 .. 0;
+         Black_Button     at 0 range 1 .. 1;
+         Direction_Switch at 0 range 2 .. 2;
+         Turn_Switch      at 0 range 3 .. 4;
+      end record;
+   for Hand_Controller'Size use 8;
+   for Hand_Controller'Bit_Order use System.Low_Order_First;
+
+
+   procedure Get (Controller       : in Controller_ID;
+                  Red_Button       : out Button_Type;
+                  Black_Button     : out Button_Type;
+                  Direction_Switch : out FB_Toggle_Type;
+                  Turn_Switch      : out LRC_Toggle_Type) is
+   begin
+      Ada.Text_IO.Put ("Hello");
+   end Get;
+end Controller;
+
+

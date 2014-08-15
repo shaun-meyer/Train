@@ -1,0 +1,37 @@
+--Locomotivation
+--James Vannordstrand
+
+Test Plan for the controller
+
+Special Equipment : Controllers a, b, or c
+Goal              : Checking Positions of switches and states of buttons
+Setup             : None
+Implementation    : run controller_test.adb
+Testing Method    : Non exhaustive, edge cases
+Expected Results  : Depending on current state of controller that will be what is printed to the screen.
+
+This will be a test that depending on what button is pressed or toggle is flipped will display
+to the screen all of the buttons and toggles along with their current states.
+
+Button     Pressed      State
+-----------------------------
+Red        True         Down
+Red        False        Up
+Black      True         Down
+Black      False        Up
+
+
+
+Direction-Switch     State
+--------------------------
+Forward              Forward
+Backward             Backward
+
+
+
+Turn-Switch          State
+--------------------------
+Left                 Left
+Right                Right
+Center               Center
+

@@ -1,0 +1,31 @@
+--Locomotivation
+--Michael Miller
+
+Test Plan for the Engineer test
+
+Special Equipment : controller
+Goal              : verify commands are sent correctly from multiple controllers, and procedures work as expected
+Setup             : to test this since the train body isn't complete yet print statements are set in place for where the train is called.
+Implementation    : run engineers_test.adb
+Testing Method    : This is not an exhaustive test. we are testing the edge cases.
+
+Enable Engineer
+Engineer Train  Control_ID
+1	 1	1			(controller 1 is enabled)
+2	 2	2			(controller 2 is enabled)
+(enter commands on controllers)
+press red/black button
+toggle up/down switch
+toggle left/right switch
+turn knob
+
+Toggle_skill
+engineer
+1			(print statement saying expert)
+1			(print statement saying novice)
+
+Disable_Engineer
+engineer
+1		press buttons on controller 1 nothing will be displayed
+2		press buttons on controller 2 nothing will be displayed
+

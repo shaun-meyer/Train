@@ -1,0 +1,70 @@
+--Locomotivation
+--James Vannordstrand
+
+DISPATCHER TEST PLAN
+
+Train Number    Expected Result
+-------------------------------
+-1              Re-Enter
+1               Valid
+2               Valid
+3               Valid              
+4               Re-Enter
+a               Re-Enter
+abc             Re-Enter
+3000000000      Re-Enter
+
+
+Locomotive (Line Number)    Expected Result
+-------------------------------------------
+-1                          Re-Enter
+1                           Valid
+5                           Valid
+11                          Valid
+12                          Re-Enter
+a                           Re-Enter
+abc                         Re-Enter
+3000000000                  Re-Enter   
+
+
+Loco Position   Expected Result
+-------------------------------
+-1              Re-Enter
+1               Valid    
+20              Valid
+40              Valid
+41              Re-Enter
+a               Re-Enter
+abc             Re-Enter 
+3000000000      Re-Enter
+
+
+Caboose Position   Expected Result
+----------------------------------
+-1                 Re-Enter
+1                  Valid    
+20                 Valid
+40                 Valid
+41                 Re-Enter
+a                  Re-Enter
+abc                Re-Enter 
+3000000000         Re-Enter
+
+
+Re-Enter Info     Expected Result of Success       Expected Result of Fail
+--------------------------------------------------------------------------
+Y                 Valid                            Valid
+N                 Valid                            Valid
+R                 Valid                            Re-Enter
+Q                 Valid                            Valid
+G                 Re-Enter                         Re-Enter
+abc               Re-Enter                         Re-Enter
+15                Re-Enter                         Re-Enter
+               
+Goal - Make sure dispatcher handles user input through validation.
+
+DESCRIPTION
+-----------
+This is a test plan that is carried out by a person testing each case when running
+the dispatcher. No test program required manually check each case.
+

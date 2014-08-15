@@ -1,0 +1,178 @@
+V "GNAT Lib v4.6"
+M P W=b
+P SS ZX
+R nnnnnnnnnnvnnnnnnnvnnvnnnvnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnnn
+
+U dispatcher%b		dispatcher.adb		4ac7e9c8 NE OO SU
+W ada%s			ada.ads			ada.ali
+W ada.characters%s	a-charac.ads		a-charac.ali
+W ada.characters.handling%s  a-chahan.adb	a-chahan.ali
+W ada.exceptions%s	a-except.adb		a-except.ali
+W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
+W ada.io_exceptions%s	a-ioexce.ads		a-ioexce.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W ada.text_io.integer_aux%s  a-tiinau.adb	a-tiinau.ali
+W ada.text_io.integer_io%s
+W layout%s		layout.adb		layout.ali
+W layout.search%s	layout-search.adb	layout-search.ali
+W locomotives%s		locomotives.ads		locomotives.ali
+W system.concat_2%s	s-conca2.adb		s-conca2.ali
+W system.concat_3%s	s-conca3.adb		s-conca3.ali
+W system.img_int%s	s-imgint.adb		s-imgint.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-charac.ads		20070912115821 2d3ec45b
+D a-chahan.ads		20100810135053 1d381dcd
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-inteio.ads		20070406091342 f64b89a4
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-stream.ads		20090409150019 2ca4ee37
+D a-tags.ads		20101021101406 c7695348
+D a-textio.ads		20091028140912 386df5d4
+D a-tiinau.ads		20090409150019 8114c8e4
+D a-tiinio.ads		20090409150019 aa04e5d6
+D a-tiinio.adb		20091130162119 df9cd7af
+D a-unccon.ads		20070406091342 f9eb8f06
+D dispatcher.adb	20140317035716 6a4e9de0
+D interfac.ads		20090409150019 f77d8799
+D i-cstrea.ads		20100622165701 1bd72c32
+D layout.ads		20140317035716 b155ab38
+D layout-search.ads	20140426234921 fa055141
+D locomotives.ads	20140317035716 335a0921
+D system.ads		20120427100214 23e1f70b
+D s-conca2.ads		20090420091404 fbd0f2fc
+D s-conca3.ads		20090420091404 762a026a
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-imgint.ads		20090409150019 02dbe0c2
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-wchcon.ads		20090417130712 bfeb2e3d
+X 1 ada.ads
+16K9*Ada 19e8 16|4r6 5r6 6r6 7r6 35r28 54r10 55r20 75r13 78r13 81r10 98r10
+. 100r13 105r16 106r16 107r16 108r16 109r16 113r18 114r16 115r16 118r7 143r7
+. 144r7 145r7 146r7 148r10 150r10 151r10 152r10 154r7 199r10 201r10 203r10
+. 204r10 206r10 207r10 208r10 209r10 210r10 211r10 212r10 216r10 261r13 263r13
+. 265r13 267r13 268r13 270r13 272r13 290r10 292r10 294r10 296r10 298r10
+X 2 a-charac.ads
+16K13*Characters 18e19 16|6r10 55r24
+X 3 a-chahan.ads
+36K24*Handling 150e28 16|6w21 55r35
+63V13*To_Upper{character} 16|55s44
+X 7 a-inteio.ads
+18K13*Integer_Text_IO[13|45] 16|5w10 100r17 106r20 108r20 148r14 207r14 210r14
+X 8 a-ioexce.ads
+18K13*IO_Exceptions 30e22 16|7w10 113r22
+27X4*Data_Error 16|113r36
+X 11 a-textio.ads
+49K13*Text_IO 472e16 16|4w10 35r32 54r14 75r17 78r17 81r14 98r14 105r20 107r20
+. 109r20 114r20 115r20 118r11 143r11 144r11 145r11 146r11 150r14 151r14 152r14
+. 154r11 199r14 201r14 203r14 204r14 206r14 208r14 209r14 211r14 212r14 216r14
+. 261r17 263r17 265r17 267r17 268r17 270r17 272r17 290r14 292r14 294r14 296r14
+. 298r14
+74I12*Field{integer}
+167U14*New_Line 16|118s19 144s19 146s19 152s22 154s19 204s22 208s22 211s22
+. 216s22 265s25
+170U14*Skip_Line 16|81s22 115s28
+207U14*Get 16|54s22
+243U14*Put 16|105s28 107s28 150s22 151s22 203s22 206s22 209s22 212s22
+264U14*Put_Line 16|75s25 78s25 98s22 109s28 114s28 143s19 145s19 199s22 201s22
+. 261s25 263s25 267s25 268s25 270s25 272s25 290s22 292s22 294s22 296s22 298s22
+X 13 a-tiinio.ads
+43I9 Num 16|35r52
+45k21*Integer_IO 84e27 16|35r40
+55U14*Get 16|100s33[7|18]
+65U14*Put 16|106s36[7|18] 108s36[7|18] 148s30[7|18] 207s30[7|18] 210s30[7|18]
+. 214s22[35]
+66i7 Item{integer} 16|148r35[7|18] 214r27[35]
+67i7 Width{11|74I12} 16|149r35[7|18]
+X 16 dispatcher.adb
+13U11*Dispatcher 13b11 324l5 324t15
+15E9 Question_Number 15e43 39r55
+15n29 First{15E9} 57r28 74r24 276r48
+15n36 Second{15E9} 67r28 302r45
+16I12 Train_Type{integer} 23r18 131r33
+19i4 Number_Of_Trains{integer} 32r36 317m47 318r54
+21R9 Train_Rec 26e17 27r53
+23i10 Brand{16I12} 165m35
+24i10 Loco{integer} 176m35
+25i10 Caboose{integer} 187m35
+27A9 Train_Array(21R9)<integer> 32r18
+29R9 Train_List 33e17 123r55 246r22
+31i10 Size{natural} 251m14
+32a10 Items{27A9} 165m14 176m14 187m14
+35K12 Block_IO[13|45] 214r13
+38U14 Validate_Letter_Input 38b14 38<37 39>37 84l8 84t29 275s13 301s10
+38e37 Letter{character} 54m27 55m10 55r54 56r14 56r30 56r46 62r16 63m16 66r17
+. 66r33 66r49 66r65 275r36 301r33
+39e37 Question{15E9} 57r17 67r17 74r13 276r36 302r33
+45b7 Continue{boolean} 58m13 68m13 71r20
+86U14 Validate_Integer_Input 86b14 86>38 87>38 88>38 89<38 119l8 119t30 157s7
+. 168s7 179s7 227s7
+86s38 User_Instruction{string} 98r32 158r10 169r10 180r10 228r10
+87i38 Low_End{integer} 102r16 106r41 161r10 172r10 183r10 229r10
+88i38 High_End{integer} 102r43 108r41 162r10 173r10 184r10 230r10
+89i38 Input_Value{integer} 100m38 102r27 102r55 163r10 174r10 185r10 231r10
+121U14 Retrieve_Train_Data 121b14 121>35 122<35 123<35 220l8 220t27 255s10
+. 279s16
+121i35 Train_Number{integer} 160r27 165r21 171r27 176r21 182r45 187r21 200r49
+. 255r31 279r37
+122b35 Found_Success{boolean} 195m22 197r10 256r31 280r37
+123r35 Trains{29R9} 165m7 176m7 187m7 257r31 281r37
+131i7 Brand{16I12} 163m30 165r44 203r56
+132i7 Train_Starting_Block{integer} 174m30 176r43 191r39 207r35
+133i7 Caboose_Starting_Block{integer} 185m30 187r46 192r39 210r35
+134r7 Blocks_Beneath{20|24R9} 139m7 193m22 213r23 213r53 214r35
+135r7 Turnouts_Beneath{20|45R9} 140m7 194m22
+147i11 Item{integer} 148r44 151r56
+213i14 Count{integer} 214r57
+222U14 Dispatcher_Startup 222b14 222<34 233l8 233t26 317s7
+222i34 Number_Of_Trains{integer} 231m30 317r27
+235U14 Dispatcher_Data_Retrieval 235b14 235>41 236<41 311l8 311t33 318s7
+235i41 Number_Of_Trains{integer} 251r22 253r29 318r34
+236e41 User_Response{character} 249m7 275m48 278r16 288r20 288r43 301m45
+. 304r20 304r43 306r13 319r34
+244b7 Success{boolean} 256m48 259r20 280m54 283m16
+245i7 Train_Number{integer} 253r13 255r48 279r54 307m13 307r29
+246r7 Trains{29R9} 251m7 257m48 281m54
+313e4 User_Response{character} 319m54 321r17
+X 19 layout.ads
+4K9*Layout 16|8w6 9r6 35r59 134r33 135r33 190r7 191r22 192r22 19|126e11
+11I9*Block_ID<short_short_integer> 16|35r66 191r29 192r29
+X 20 layout-search.ads
+1K16*Search 16|9w13 134r40 135r40 190r14 20|84e18
+15i10*Block{19|11I9} 16|214r64
+18A9*Block_Array(13R9)<integer>
+24R9*Block_List 16|134r47 20|28e17
+26i10*Size{natural} 16|139m22 213r68
+27a10*Items{18A9} 16|213r38 214r50
+45R9*Turnout_List 16|135r47 20|49e17
+47i10*Size{natural} 16|140m24
+54U14*Blocks_Beneath 16|190s21
+54i30 Caboose{19|11I9} 16|192r10
+55i30 Loco{19|11I9} 16|191r10
+56r30 Blocks{24R9} 16|193r10
+57r30 Turnouts{45R9} 16|194r10
+58b30 Success{boolean} 16|195r10
+X 21 locomotives.ads
+1K9*Locomotives 16|10w6 16r45 147r19 151r27 162r30 203r27 21|33e16
+10A12*Loco_String{string}<integer>
+15a10*Name{10A12} 16|151r62 203r63
+21A9*Loco_Array(13R9)<integer>
+22a4*Available_Locos{21A9} 16|16r57 147r31 151r39 162r42 203r39
+

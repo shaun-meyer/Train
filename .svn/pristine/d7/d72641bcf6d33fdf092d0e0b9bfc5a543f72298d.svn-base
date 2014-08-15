@@ -1,0 +1,324 @@
+--Locomotivation
+--Shaun Meyer
+
+with Ada.Text_IO;
+with Ada.Integer_Text_IO;
+with Ada.Characters.Handling;
+with Ada.IO_Exceptions;
+with Layout;
+with Layout.Search;
+with Locomotives;
+
+
+procedure Dispatcher is
+
+   type Question_Number is (First, Second);
+   subtype Train_Type is Integer range 1 .. Locomotives.Available_Locos'Size;
+
+   --Initialize number of trains to 3 to avoid null pointers / constraint errors
+   Number_Of_Trains : Integer := 3;
+
+   type Train_Rec is
+      record
+         Brand : Train_Type;
+         Loco  : Integer;
+         Caboose : Integer;
+      end record;
+   type Train_Array is array (Positive range <>) of Train_Rec;
+
+   type Train_List is
+      record
+         Size : Natural := 0;
+         Items : Train_Array (1 .. Number_Of_Trains);
+      end record;
+
+   package Block_IO is new Ada.Text_IO.Integer_IO (Num => Layout.Block_ID);
+
+--------------------------------------------------------------------------------
+   procedure Validate_Letter_Input (Letter   :    out Character;
+                                    Question : in     Question_Number) is
+      -- This procedure validates a character input based on which question
+      --   the character is entered in response to
+      -- Preconditions : None
+      -- Postconditions: Sends a valid, uppercase letter as an out parameter
+
+      Continue : Boolean := False;
+      -- Using Continue flag to avoid having multiple exit statements in loop
+
+   begin
+      --Loops until valid
+      --each loop checks validity
+      loop
+         --First question has results Y, N, or Q
+         --Second question has results Y, N, Q, or R
+         Ada.Text_IO.Get (Letter);
+         Letter := Ada.Characters.Handling.To_Upper (Letter); --uppercase it
+         if (Letter = 'Y' or Letter = 'N' or Letter = 'Q')
+            and Question = First then
+            Continue := True;
+
+            --Changing N to R to simplify parsing later
+            -- Equivalent statements
+            if Letter = 'N' then
+               Letter := 'R';
+            end if;
+
+         elsif (Letter = 'Y' or Letter = 'N' or Letter = 'Q' or Letter = 'R')
+            and Question = Second then
+            Continue := True;
+         end if;
+
+         exit when Continue;
+
+         --If it didn't exit user entered bad input
+         if Question = First then
+            Ada.Text_IO.Put_Line ("Not a Valid Response. Please enter" &
+                                  " 'Y', 'N', or 'Q'");
+         else
+            Ada.Text_IO.Put_Line ("Not a Valid Response. " &
+                                  "Please enter 'Y', 'N', 'R' or 'Q'");
+         end if;
+         Ada.Text_IO.Skip_Line;
+
+      end loop;
+   end Validate_Letter_Input;
+--------------------------------------------------------------------------------
+   procedure Validate_Integer_Input (User_Instruction : in     String;
+                                     Low_End          : in     Integer;
+                                     High_End         : in     Integer;
+                                     Input_Value      :    out Integer) is
+      -- This procedure validates an integer input based on which question
+      --   the integer is entered in response to
+      -- Preconditions : None
+      -- Postconditions: Sends a validated integer as an out parameter
+   begin
+      loop
+         --While the input value is outside of the boundaries, print a usage
+         -- statement. If the input value is within the boundaries, send it out
+         Ada.Text_IO.Put_Line (User_Instruction);
+         begin
+            Ada.Integer_Text_IO.Get (Input_Value);
+
+            if Low_End <= Input_Value and High_End >= Input_Value then
+               exit;
+            else
+               Ada.Text_IO.Put ("Input valid integer between ");
+               Ada.Integer_Text_IO.Put (Low_End, 1);
+               Ada.Text_IO.Put (" and ");
+               Ada.Integer_Text_IO.Put (High_End, 1);
+               Ada.Text_IO.Put_Line (" (inclusive).");
+            end if;
+
+         exception
+            when Ada.IO_Exceptions.Data_Error =>
+               Ada.Text_IO.Put_Line ("Enter an integer.");
+               Ada.Text_IO.Skip_Line;
+         end;
+      end loop;
+      Ada.Text_IO.New_Line;
+   end Validate_Integer_Input;
+--------------------------------------------------------------------------------
+   procedure Retrieve_Train_Data (Train_Number  : in  Integer;
+                                  Found_Success : out Boolean;
+                                  Trains        : out Train_List) is
+      -- This procedure gathers all relevant information for the train,
+      -- including the train type name and the starting blocks of loco & caboose
+      -- Preconditions : None
+      -- Postconditions: Sends the result of running the layout search and a
+      --   list of the trains as out parameters, as well as setting the data
+      --   retrieved as input to the specified train
+
+      Brand                   : Train_Type;
+      Train_Starting_Block    : Integer;
+      Caboose_Starting_Block  : Integer;
+      Blocks_Beneath          : Layout.Search.Block_List (3);
+      Turnouts_Beneath        : Layout.Search.Turnout_List (4);
+
+
+   begin
+      Blocks_Beneath.Size := 0;
+      Turnouts_Beneath.Size := 0;
+
+      -- Present which trains are available for use
+      Ada.Text_IO.Put_Line ("The following locomotives are available");
+      Ada.Text_IO.New_Line (2);
+      Ada.Text_IO.Put_Line ("     Road Name            Model          Number");
+      Ada.Text_IO.New_Line;
+      for Item in Locomotives.Available_Locos'Range loop
+         Ada.Integer_Text_IO.Put (Item  => Item,
+                                  Width => 2);
+         Ada.Text_IO.Put (" ");
+         Ada.Text_IO.Put (Locomotives.Available_Locos (Item).Name);
+         Ada.Text_IO.New_Line;
+      end loop;
+      Ada.Text_IO.New_Line (1);
+
+      -- Retrieve which train will be used for this train
+      Validate_Integer_Input
+        (User_Instruction => "Enter the line number from the above table" &
+           " of the locomotive pulling train #" &
+           Integer'Image (Train_Number),
+         Low_End          => 1,
+         High_End         => Locomotives.Available_Locos'Size,
+         Input_Value      => Brand);
+
+      Trains.Items (Train_Number).Brand := Brand;
+
+      -- Retrieve the starting block for the loco
+      Validate_Integer_Input
+        (User_Instruction => "On which block is the locomotive" &
+           " pulling train" &
+           Integer'Image (Train_Number) & " located?",
+         Low_End          => 1,
+         High_End         => 40,
+         Input_Value      => Train_Starting_Block);
+
+      Trains.Items (Train_Number).Loco := Train_Starting_Block;
+
+      -- Retrieve the starting block for the caboose
+      Validate_Integer_Input
+        (User_Instruction => "On which block is the caboose (or observation" &
+                             " car) for train" &
+                             Integer'Image (Train_Number) & " located?",
+         Low_End          => 1,
+         High_End         => 40,
+         Input_Value      => Caboose_Starting_Block);
+
+      Trains.Items (Train_Number).Caboose := Caboose_Starting_Block;
+
+      -- Run the layout search to see if the train has a valid placement
+      Layout.Search.Blocks_Beneath
+        (Loco     => Layout.Block_ID (Train_Starting_Block),
+         Caboose  => Layout.Block_ID (Caboose_Starting_Block),
+         Blocks   => Blocks_Beneath,
+         Turnouts => Turnouts_Beneath,
+         Success  => Found_Success);
+
+      if Found_Success then
+         -- Display all entered information for confirmation
+         Ada.Text_IO.Put_Line ("                Train #" &
+                                 Integer'Image (Train_Number));
+         Ada.Text_IO.Put_Line ("            Confirmation of Information");
+
+         Ada.Text_IO.Put (Locomotives.Available_Locos (Brand).Name);
+         Ada.Text_IO.New_Line (2);
+
+         Ada.Text_IO.Put ("Locomotive on block");
+         Ada.Integer_Text_IO.Put (Train_Starting_Block);
+         Ada.Text_IO.New_Line (1);
+         Ada.Text_IO.Put ("Caboose    on block");
+         Ada.Integer_Text_IO.Put (Caboose_Starting_Block);
+         Ada.Text_IO.New_Line (1);
+         Ada.Text_IO.Put ("Train occupies blocks");
+         for Count in Blocks_Beneath.Items'First .. Blocks_Beneath.Size loop
+            Block_IO.Put (Item => Blocks_Beneath.Items (Count).Block);
+         end loop;
+         Ada.Text_IO.New_Line (2);
+      end if;
+
+
+   end Retrieve_Train_Data;
+--------------------------------------------------------------------------------
+   procedure Dispatcher_Startup (Number_Of_Trains : out Integer) is
+      -- This procedure starts the dispatcher by asking how many trains to run
+      -- Preconditions : None
+      -- Postconditions: Send the number of trains as an out parameter
+   begin
+      Validate_Integer_Input
+        (User_Instruction => "How many trains do you wish to run? (1, 2, or 3)",
+         Low_End          => 1,
+         High_End         => 3,
+         Input_Value      => Number_Of_Trains);
+
+   end Dispatcher_Startup;
+--------------------------------------------------------------------------------
+   procedure Dispatcher_Data_Retrieval (Number_Of_Trains : in Integer;
+                                        User_Response    : out Character) is
+      -- This procedure acts as a wrapper for the data retrieval procedure,
+      --  ensuring that the process is able to terminate and reinitialize
+      --  successfully.
+      -- Preconditions : None
+      -- Postconditions: All data for the trains is gathered properly, and user
+      --  commands are followed
+
+      Success      : Boolean;
+      Train_Number : Integer := 1;
+      Trains       : Train_List;
+
+   begin
+      User_Response := 'Y';
+
+      Trains.Size := Number_Of_Trains;
+
+      while Train_Number <= Number_Of_Trains loop
+
+         Retrieve_Train_Data (Train_Number  => Train_Number,
+                              Found_Success => Success,
+                              Trains        => Trains);
+
+         while not Success loop
+
+            Ada.Text_IO.Put_Line ("The maximum number of blocks beneath a train"
+                                  & " is 3. The minimum is 2.");
+            Ada.Text_IO.Put_Line ("There is an invalid number of blocks beneath"
+                                  & " the train.");
+            Ada.Text_IO.New_Line (2);
+
+            Ada.Text_IO.Put_Line ("Would you like to reenter the information?");
+            Ada.Text_IO.Put_Line ("    Y = yes, I wish to reenter" &
+                                    " the train's location.");
+            Ada.Text_IO.Put_Line ("    N = no, I wish to restart " &
+                                    "set up from the beginning.");
+            Ada.Text_IO.Put_Line ("    Q = no, I wish to terminate" &
+                                    " this operating session.");
+
+            Validate_Letter_Input (Letter   => User_Response,
+                                   Question => First);
+
+            if User_Response = 'Y' then
+               Retrieve_Train_Data (Train_Number  => Train_Number,
+                                    Found_Success => Success,
+                                    Trains        => Trains);
+            else
+               Success := True;  --Making it leave the loop
+            end if;
+
+         end loop;
+
+         exit when User_Response = 'R' or User_Response = 'Q';
+
+         Ada.Text_IO.Put_Line ("Is this information correct? " &
+                                 "Enter one of the following : ");
+         Ada.Text_IO.Put_Line ("    Y = yes, the information" &
+                                 " for this train is correct.");
+         Ada.Text_IO.Put_Line ("    N = no, I wish to enter " &
+                                 "different information for this train.");
+         Ada.Text_IO.Put_Line ("    R = no, I wish to restart " &
+                                 "setting up from the beginning.");
+         Ada.Text_IO.Put_Line ("    Q = no, I wish to terminate " &
+                                 "this operating session.");
+
+         Validate_Letter_Input (Letter   => User_Response,
+                                Question => Second);
+
+         exit when User_Response = 'R' or User_Response = 'Q';
+
+         if User_Response = 'Y' then
+            Train_Number := Train_Number + 1;
+         end if;
+
+      end loop;
+   end Dispatcher_Data_Retrieval;
+--------------------------------------------------------------------------------
+   User_Response : Character;
+
+begin
+   loop
+      Dispatcher_Startup (Number_Of_Trains => Number_Of_Trains);
+      Dispatcher_Data_Retrieval (Number_Of_Trains => Number_Of_Trains,
+                                 User_Response    => User_Response);
+      -- Train_Controller ();
+      exit when User_Response /= 'R';
+   end loop;
+
+end Dispatcher;

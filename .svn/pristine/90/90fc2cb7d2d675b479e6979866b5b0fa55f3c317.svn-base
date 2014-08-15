@@ -1,0 +1,31 @@
+-- Locomotivation
+-- Mike Miller
+with Ada.Interrupts.Names;
+with Common_Units;
+use Common_Units;
+package ADC is
+-- Specification for CIO_DAS08/Jr board
+
+   type    Channel_Number    is range 0 .. 7;
+   subtype Output_Volts is Common_Units.Volts range -5.0 .. 5.0;
+   protected ADC_Interrupt is
+      entry Read (Channel : in     Channel_Number;
+                  Value   :    out Output_Volts);
+   private
+      Busy                : Boolean := False;
+      Conversion_Complete : Boolean := False;
+      procedure Handler;
+      pragma Attach_Handler (Handler, Ada.Interrupts.Names.SIGHUP);
+      pragma Interrupt_Priority;
+      entry Wait_For_Completion (Channel : in Channel_Number;
+                                 Value   : out Output_Volts);
+   end ADC_Interrupt;
+
+   procedure Read (Channel : in     Channel_Number;
+                   Value   :    out Output_Volts);
+      -- This procedure reads the bit from the specified channel
+      -- Precondition : There must be bit values at the specified channel
+      -- Postcondition : Bit values are returned
+private
+   for Channel_Number'Size use 3;
+end ADC;

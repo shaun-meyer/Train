@@ -1,0 +1,44 @@
+--Locomotivation
+--Mike Miller
+
+Test Plan for the Turnouts
+
+Special Equipment : Turnouts, 82C55 Chip
+Goal              : Make sure Turnout performs as expected
+Setup             : None
+Implementation    : run turnout_test.adb
+Testing Method    : This is not an exhaustive test. we are testing the edge cases.
+
+Test Data
+Set 							Expected Result
+Request_ID	Turnout_ID	Turnout_Direction	
+1		1		Right			Status of turnout will show on screen twice first moving = true then moving = false desired and current will both bet Right		
+1		1		Left			Status of turnout will show on screen twice first moving = true then moving = false desired and current will both bet Left
+Fail Turnout
+1		1		Right			Status of turnout will show on screen five times showing all states of turnout
+1		1		Left	
+
+
+Status		Expected_Result
+Turnout_ID	Status_Rec(Desired, Current, Moving)
+1                          Left     Left     True
+1			   Left	    Left     False
+1			   Right    Right    True
+1	                   Right    Right    False
+
+
+Direction_Of
+Turnout_ID					Turnout_Direction
+(all turnouts set to left after startup)
+1						Left
+24						Left
+
+
+(set Turnouts to Right)
+1						Right
+24						Right
+
+
+Shut_Down
+Expected Result
+All turnouts will be in the startup direction (Left)

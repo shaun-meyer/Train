@@ -1,0 +1,18 @@
+V "GNAT Lib v4.6"
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U locomotives%s		locomotives.ads		335a0921 NE OO PU PK
+
+D locomotives.ads	20140317035716 335a0921
+D system.ads		20120427100214 23e1f70b
+X 1 locomotives.ads
+1K9*Locomotives 3r17 33l5 33e16
+10A12*Loco_String{string}<integer> 15r29
+11I12*Percent{integer} 16r29
+13R9*Loco_Rec 17e17 21r52
+15a10*Name{10A12}
+16i10*Minimum_Throttle{11I12}
+21A9*Loco_Array(13R9)<integer> 22r31
+22a4*Available_Locos{21A9}
+

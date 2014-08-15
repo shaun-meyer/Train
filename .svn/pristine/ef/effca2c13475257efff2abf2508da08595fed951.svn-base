@@ -1,0 +1,57 @@
+--Locomotivation
+--James Vannordstrand
+
+Test Plan for the Sound
+
+Special Equipment : Dallee
+Goal              : Make sure sounds can be performed with multiple tasks
+Setup             : None
+Implementation    : run Sound_test.adb
+Testing Method    : This is not an exhaustive test. we are testing the edge cases.
+
+Test Data
+Bell_On/Bell_Off - single task
+Input_Values	Expected_Result
+1		Bell is on for 2 seconds then off for device 1
+2		Bell is on for 2 seconds then off for device 2
+3		Bell is on for 2 seconds then off for device 3
+
+Bell_On/Bell_Off - two tasks simultaniously	
+Don't need to test because if the call Bell_On/Bell_Off is working properly
+in the single task test then it will be fine for multiple tasks 
+because we use a protected procedure in which ada has already checked
+mutual exclusion for us.
+
+Sound_Horn -single task
+Input_Values	 		Expected_Result
+Unit Signal				
+1    Stop			Short
+1    Livestock_On_Track		4 Shorts
+1    Warning			Long Short
+2    Stop			Short
+2    Livestock_On_Track		4 Shorts
+2    Warning			Long Short
+3    Stop			Short
+3    Livestock_On_Track		4 Shorts	
+3    Warning			Long Short
+
+Sound_Horn - two tasks simultaniously
+Input_Values	Expected_Result
+Unit Signal				
+1    Start	Whichever task is initialized first, won't run both if unit is the same
+1    Stop
+
+2    Start
+2    Stop
+
+3    Start
+3    Stop
+
+1    Start      If the unit is different the horns may run at the same time.
+2    Start
+
+2    Start
+3    Start
+
+1    Start
+2    Stop

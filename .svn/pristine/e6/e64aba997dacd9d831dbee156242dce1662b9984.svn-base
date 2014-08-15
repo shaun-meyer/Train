@@ -1,0 +1,99 @@
+--  Locomotivation
+--  James Vannordstrand
+
+with Ada.Text_IO;
+with Ada.Characters.Handling; use Ada.Characters.Handling;
+
+package body Command is
+   type State_Type is (Waiting_First_Char, Waiting_Second_Char,
+                       Waiting_Third_Char, Basic_Validation,
+                       Compound_Validation);
+   type Response_Type is array (1 .. 3) of Character;
+
+
+   procedure Retrieve_Command (State   : in out State_Type;
+                               Command : out Command_Rec) is
+      --This procedure will retrieve the command given, and depending on the
+      -- current state, handles the command
+      --Preconditions  : None
+      --Postconditions : A command is sent as the out parameter
+      Char : Character;
+      Response : Response_Type;
+      Response_Size : Integer := 0;
+
+   begin
+      loop
+         case State is
+            when Waiting_First_Char =>
+               Ada.Text_IO.Get (Item => Char);
+               Response (1) := Char;
+               Response_Size := Response_Size + 1;
+               if Is_Digit (Item => Char) then
+                  State := Waiting_Second_Char;
+               else
+                  State := Basic_Validation;
+               end if;
+
+            when Waiting_Second_Char =>
+               Ada.Text_IO.Get (Item => Char);
+               Response (2) := Char;
+               Response_Size := Response_Size + 1;
+               if Is_Digit (Item => Char) then
+                  State := Waiting_Third_Char;
+               else
+                  State := Compound_Validation;
+               end if;
+
+            when Waiting_Third_Char =>
+               Ada.Text_IO.Get (Item => Char);
+               Response (3) := Char;
+               Response_Size := Response_Size + 1;
+               State := Compound_Validation;
+
+            when Basic_Validation =>
+               case Response (1) is
+                  when 'R' | 'r' =>
+                     Command := (Which => Restart);
+                  when 'Q' | 'q' =>
+                     Command := (Which => Quit);
+                  when ' ' =>
+                     Command := (Which => Stop_All);
+                  when others =>
+                     Command := (Which => Error);
+               end case;
+
+            when Compound_Validation =>
+               if Response_Size = 2 then
+                  case Response (2) is
+                     when 'S' | 's' =>
+                        if Response (1) > 0 and
+                          Response (1) < 4 then
+                           Command := (Which => Stop,
+                                       Train => Response (1));
+                        else
+                           Command := (Which => Error);
+                        end if;
+
+                     when others =>
+                        Command := (Which => Error);
+                  end case;
+               end if;
+         end case;
+      end loop;
+   end Retrieve_Command;
+
+   procedure Get (Command : out Command_Rec) is
+      State : State_Type;
+   begin
+      Retrieve_Command (State   => State,
+                        Command => Command);
+   end Get;
+-- space bar stops all trains
+-- Ng starts train N (n = 1..3)
+-- Ns stops train N (n = 1..3)
+-- Nr turns turnout right (N = 1..26)
+-- Nl turns turnout left (N = 1..26)
+-- nf free all reservations on block n (n = 1..40)
+-- ne set engineer skill lvl (n = 1..3)
+-- r reinitialize system hults all trains, displays welcome screen
+end Command;

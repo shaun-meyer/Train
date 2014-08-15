@@ -1,0 +1,143 @@
+--Locomotivation
+--James Vannordstrand
+
+Test Plan for the Train
+
+Special Equipment : Controller, Cabs, Dallee, Sound_Units, Layout Track, Trains, Terminal, Everything worked on essentially
+Goal              : Verify that the trail will run correctly in all senarios taken into consideration
+Setup             : Place trains on the track in correct locations.
+Implementation    : run Dispatcher.adb
+Testing Method    : This is not an exhaustive test. we are testing the edge cases.
+
+Enable_Train
+------------
+Nothing else will work if this doesn't work
+testing the other functions will show that
+this is correct.
+
+Is_Triggered
+------------
+Cross a magnet over the hall sensor and
+check if the functions that we have in
+the procedure are called.
+
+Hall Sensor   Train-End   What Happens
+1             Loco        reserve next block if possible, power block just reached, adjust turnouts if needed, 
+1             Caboose     unpower block just left, unreserve block just left    
+26            Loco        reserve next block if possible, power block just reached to opposite, adjust turnouts if needed,
+26            Caboose     unpower block just left, unreserve block just left  
+
+-------------------------------------- 
+
+Throttle
+--------
+Increasing the knob on the controller
+should increase the speed of the train
+that corresponds with the controller.
+Smart Throttle implemented aswell.
+
+Throttle-Percent  What Happens  
+10                Train starts moving
+50                Train is going half speed
+100               Train at maximum speed
+
+-------------------------------------
+
+Set_Turnout
+-----------
+Sets the turnout infront of the train.
+
+Current-Block   Direction-Moving   Set-Turnout-Direction-To  Results (if train can reserve common)
+1               Normal             Right                     turnout 6 set to Right
+1               Reverse            Right                     turnout 13 set to Right
+1               Normal             Left                      turnout 6 set to Left
+1               Reverse            Left                      turnout 13 set to Left
+35              Normal             Right                     turnout 21 set to Right
+35              Reverse            Right                     turnout 9 set to Right
+35              Normal             Left                      turnout 21 set to Left
+35              Reverse            Left                      turnout 9 set to Left
+
+---------------------------------------
+
+Set_Direction
+-------------
+Changes the direction the train is moving.
+
+Current-Direction   Time-Waited (seconds)   Results
+Normal              1.0                     Normal
+Normal              3.0                     Reversed
+Reversed            1.0                     Reversed
+Reversed            3.0                     Normal
+Normal              9000                    Reversed
+Reversed            9000                    Normal
+-----------------------------------------
+
+Horn
+----
+Signals the horn when the controllers
+button is pressed.
+
+Controller-Number  Result
+1                  Train 1 horn
+2                  Train 2 horn
+3                  Train 3 horn
+-------------------------------------
+
+Engineer_Stop
+-------------
+Signals emergency stop when controller
+red button is pressed.
+
+Controller-Number  Result
+1                  Train 1 Stopped
+2                  Train 2 Stopped
+3                  Train 3 Stopped
+--------------------------------------
+
+Dispatcher_Request_Stop
+-----------------------
+Sent from dispatcher to tell train to stop.
+
+Train-Chosen   Result
+1              Train 1 Stopped
+2              Train 2 Stopped
+3              Train 3 Stopped
+-------------------------------------------
+
+Dispatcher_Request_Go
+---------------------
+Sent from dispatcher to tell train to go.
+
+Train-Chosen   Result
+1              Train 1 Going
+2              Train 2 Going
+3              Train 3 Going
+-----------------------------------------
+
+Failure_Callback
+----------------
+When a turnout fails tells train what to do.
+Upon hitting a failed turnout the train should
+stop.
+---------------------------------------------
+
+Recovery_Callback
+-----------------
+Upon a failed turnouts recovery tells the train what to do.
+Upon hitting a failed turnout that has recovered the train
+should start up again.
+-----------------------------------------------------------
+
+Disable
+-------
+Resets everything to defaults. Used for reinitialization.
+
+
+Additional Testing
+-------------------
+Taking senarios from our notebooks and seeing if the train reacts to
+them as expected, this will find to most errors if there are any. 
+Most of the tests above are short because most of the packages have
+already been tested and we just need to make sure everything is communicating
+correctly through the train body.
+

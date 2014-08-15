@@ -1,0 +1,42 @@
+with MaRTE_OS;
+pragma Warnings (Off, MaRTE_OS);
+with Port_IO; use Port_IO;
+with Common_Units;
+use Common_Units;
+--Digital to Analog Converter
+package body DAC is
+   Base : constant Port_IO.Address_Range := 16#240#;
+   type Address_Array is array (Channel_Number) of Port_IO.Address_Range;
+   Address_Of : constant Address_Array := (Base,
+                                           Base + 2,
+                                           Base + 4,
+                                           Base + 6,
+                                           Base + 8,
+                                           Base + 10);
+
+   procedure Write (Channel : in Channel_Number;
+                    Value   : in Common_Units.Volts) is
+      Volts : Output_Volts;
+
+   begin
+      -- how do we write out to analog
+      -- where do we get the addresses
+
+      --Performe conversion to Volts
+      if Value >= Output_Volts (0) then
+         Volts := (Value * Common_Units.Volts (409.5)) +
+           Common_Units.Volts (2047);
+      else
+         Volts := (Value + Common_Units.Volts (5)) / Common_Units.Volts (409.5);
+      end if;
+      Port_IO.Out_Word (Address => Address_Of (Channel),
+                        Data    => Port_IO.Word (Volts));
+   end Write;
+
+begin
+   for Index in Address_Array'Range loop
+      Write (Channel => Channel_Number (Address_Of (Index)),
+             Value   => 0);
+   end loop;
+end;
+end DAC;

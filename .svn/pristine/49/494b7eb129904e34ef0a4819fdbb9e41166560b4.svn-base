@@ -1,0 +1,29 @@
+-- Locomotivation
+-- Shaun Meyer
+
+with Ada.Text_IO;
+with Layout;
+with Motors;
+
+procedure Motors_Test is
+   procedure Set_Test (Motor     : in Layout.Turnout_ID;
+                       Direction : in Layout.Turn_Choice) is
+   begin
+      Motors.Set (Motor     => Motor,
+                  Direction => Direction);
+
+      Motors.In_Position (Motor => Motor);
+
+   end Set_Test;
+
+   procedure Get_Turnout_Map (Turnout  : in Layout.Turnout_ID) is
+
+   begin
+      -- TODO : Get chip (Low or High)
+      -- TODO : Get port (A, B, or C)
+      -- TODO : Get bit number (0-7)
+      null;
+
+   end Get_Turnout_Map;
+
+end Motors_Test;

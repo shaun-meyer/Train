@@ -1,0 +1,58 @@
+--Locomotivation
+--Mike Miller
+
+Test Plan for the Block
+
+Special Equipment : Cabs, 82C55 Chip
+Goal              : Make sure the Block is set correctly
+Setup             : None
+Implementation    : run Block_test.adb
+Testing Method    : This is not an exhaustive test. we are testing the edge cases.
+
+Connect_Cab
+After connecting a cab, you can then check the polarity for a block
+Cab_ID		Polarity	Block_ID	expected output to screen
+1		Normal		1		for all Normal the light will go from dim green to bright green
+2		Normal		12		
+3		Normal		13		
+4		Normal		24		
+5               Normal          25    
+6		Normal   	36		
+1               Reserved    1   for all reversed the light will go from dim red to bright red
+2               Reserved    12 
+3               Reserved    13 
+4               Reserved    24 
+5               Reserved    25 
+6               Reserved    36 
+
+Reserve and UnReserve are tested against each other. Reserve's boolean result will show whether UnReserved worked
+
+Reserve
+Train_ID	Block	Success
+1		1	True
+1               1       True
+2               1       False
+
+UnReserve
+Block_ID	Request_ID      Expected
+1		1               Reserve is decremented by 1
+
+Reserve
+Train_ID	Block	Success
+2		1	False
+
+UnReserve
+Block_ID    Request_ID      Expected
+1           1               Reserve is decremented by 1, putting it at 0. Block is connected to null cab
+This will be shown by whether or not the block is lit up
+
+Reserve
+Train_ID        Block   Success
+2               1       True
+2               1       True
+2               1       True
+
+Unreserve       
+Block_ID     Request_ID      Expected
+1            2               Reserve is decremented by 1
+1            0               Reserve is set to 0, ligh switches off 

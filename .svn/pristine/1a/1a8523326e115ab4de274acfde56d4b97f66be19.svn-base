@@ -1,0 +1,32 @@
+with MaRTE_OS;
+pragma Warnings (Off, MaRTE_OS);
+with Ada.Text_IO;
+with Controller;
+with Ada.Integer_Text_IO;
+procedure Button_Press_Count is
+
+   Black_Button_Pushes_Total : Natural;
+   Red_Button                : Controller.Button_Type;
+   Black_Button              : Controller.Button_Type;
+   Direction_Swith           : Controller.FB_Toggle_Type;
+   Turn_Switch               : Controller.LRC_Toggle_Type;
+   Controller_ID             : Controller.Controller_ID;
+begin
+   Black_Button_Pushes_Total := 0;
+   loop
+      Controller.Get (Controller       => Controller_ID,
+                   Red_Button       => Red_Button,
+                   Black_Button     => Black_Button,
+                   Direction_Switch => Direction_Swith,
+                   Turn_Switch      => Turn_Switch);
+      if Black_Button = Controller.Button_Type (Down) then
+         Black_Button_Pushes_Total := Black_Button_Pushes_Total + 1;
+      end if;
+      if Red_Button = Controller.Button_Type (Down) then
+         Ada.Text_IO.Put (Item => "Black Button Total Pushes: ");
+         Ada.Integer_Text_IO.Put (Item => Black_Button_Pushes_Total);
+         Ada.Text_IO.New_Line;
+         Black_Button_Pushes_Total := 0;
+      end if;
+   end loop;
+end Button_Press_Count;

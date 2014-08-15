@@ -1,0 +1,42 @@
+--Locomotivation
+--Mike Miller
+
+with Layout;
+use Layout;
+with Port_IO;
+use type Port_IO.Address_Range;
+
+package body Motors is
+   Board_0 : constant Port_IO.Address_Range := 16#220#;
+   Board_1 : constant Port_IO.Address_Range := 16#228#;
+
+   type Port is (A, B, C);
+   type Chip is (Low, High);
+   type Bit_Number is mod 8;
+   subtype Bit_Range is Bit_Number range 0 .. 7;
+
+   procedure Set (Motor     : in Layout.Turnout_ID;
+                  Direction : in Layout.Turn_Choice) is
+      Turnout_Location : constant Layout.Turnout_ID := Motor rem 24;
+      Current_Board    : constant Natural := Natural (Motor) / 24;
+   -- bit number = Motor rem 8 - 1
+
+
+   begin
+      null;
+   end Set;
+
+   function In_Position (Motor : in Layout.Turnout_ID) return Boolean is
+
+   begin
+      return True;
+      -- loop check to see when motor gets to correct position
+      -- 1 in position
+      -- 0 not in position
+      --read sensor pin
+
+   end In_Position;
+begin
+   null;
+   -- set configure low/high ports  to in and out boards
+end Motors;

@@ -1,0 +1,232 @@
+--Locomotivation
+--James Vannordstrand
+package body Layout.Search is
+
+-----------------------------------------------------------------------------
+
+   procedure Recursive_Block (Current   : in     Block_ID;
+                              Loco      : in     Block_ID;
+                              Direction : in     Block_Polarity;
+                              Blocks    :    out Block_List;
+                              Turnouts  :    out Turnout_List;
+                              Success   :    out Boolean);
+
+---------------------------------------------------------------------------
+   procedure Recursive_Turnout (Current   : in     Block_ID;
+                                Loco      : in     Block_ID;
+                                Direction : in     Block_Polarity;
+                                Blocks    :    out Block_List;
+                                Turnouts  :    out Turnout_List;
+                                Success   :    out Boolean) is
+
+      Next_Block_ID             : Block_ID;
+      Current_Turnout_ID        : Turnout_ID;
+      Current_Polarity          : Block_Polarity;
+      Hall_Sensor               : Hall_ID;
+      Correct_Turnout_Direction : Turnout_Direction;
+
+   begin
+      Current_Polarity := Direction;
+
+      Current_Turnout_ID := Retrieve_Turnout_ID (Block     => Current,
+                                              Direction => Direction);
+      Next_Block_ID :=
+     Retrieve_Turnout_Block_ID (Direction => Left,
+                                Turnout   => Current_Turnout_ID);
+
+      Hall_Sensor := Retrieve_Hall_ID (Current_Block => Current,
+                                    Next_Block    => Next_Block_ID);
+
+      if Is_Reversing_Point (Hall_Sensor) then
+         Current_Polarity := Opposite (Current_Polarity);
+      end if;
+
+   --Handles left branch
+      Recursive_Block (Current   => Next_Block_ID,
+                    Loco      => Loco,
+                    Direction => Current_Polarity,
+                    Blocks    => Blocks,
+                    Turnouts  => Turnouts,
+                    Success   => Success);
+
+      Correct_Turnout_Direction := Left;
+
+   --Handles Right branch
+      if not Success then
+
+         if Is_Reversing_Point (Hall_Sensor) then
+            Current_Polarity := Opposite (Current_Polarity);
+         end if;
+
+         Next_Block_ID :=
+        Retrieve_Turnout_Block_ID (Direction => Right,
+                                   Turnout   => Current_Turnout_ID);
+
+         Hall_Sensor := Retrieve_Hall_ID (Current_Block => Current,
+                                       Next_Block    => Next_Block_ID);
+
+         if Is_Reversing_Point (Hall_Sensor) then
+            Current_Polarity := Opposite (Current_Polarity);
+         end if;
+         Recursive_Block (Current   => Next_Block_ID,
+                       Loco      => Loco,
+                       Direction => Current_Polarity,
+                       Blocks    => Blocks,
+                       Turnouts  => Turnouts,
+                       Success   => Success);
+         Correct_Turnout_Direction := Right;
+      end if;
+
+      --Adding Turnout to list
+
+      Turnouts.Size := Turnouts.Size + 1;
+      Turnouts.Items (Turnouts.Size).Turnout := Current_Turnout_ID;
+      Turnouts.Items (Turnouts.Size).Direction := Correct_Turnout_Direction;
+
+      if not Success then
+         Turnouts.Size := Turnouts.Size - 1;
+      end if;
+   end Recursive_Turnout;
+
+---------------------------------------------------------------------------
+   procedure Recursive_Block (Current   : in     Block_ID;
+                              Loco      : in     Block_ID;
+                              Direction : in     Block_Polarity;
+                              Blocks    :    out Block_List;
+                              Turnouts  :    out Turnout_List;
+                              Success   :    out Boolean) is
+      Next_Terminator     : Terminator_Type;
+      Next_Block_ID       : Block_ID;
+      Hall_Sensor         : Hall_ID;
+      Current_Polarity    : Block_Polarity;
+      Current_Turnout_ID  : Turnout_ID;
+      Current_Block_Index : Natural;
+
+   begin
+      Current_Block_Index := 1;
+      Success := False;
+
+      Current_Polarity := Direction;
+
+      Blocks.Size := Blocks.Size + 1;
+      Blocks.Items (Blocks.Size).Block := Current;
+      Blocks.Items (Blocks.Size).Direction := Current_Polarity;
+
+      if Current = Loco then
+         Success := True;
+      else
+         Next_Terminator := Retrieve_Terminator (Block     => Current,
+                                                 Direction => Direction);
+
+         if Next_Terminator = Turnout and Blocks.Size < Blocks.Max_Size then
+
+            Recursive_Turnout (Current   => Current,
+                               Loco   => Loco,
+                               Direction => Direction,
+                               Blocks    => Blocks,
+                               Turnouts  => Turnouts,
+                               Success   => Success);
+
+         elsif Next_Terminator = Block and Blocks.Size < Blocks.Max_Size then
+
+            Next_Block_ID := Retrieve_Next_Block_ID (Block     => Current,
+                                                     Direction => Direction);
+
+            Hall_Sensor := Retrieve_Hall_ID (Current_Block => Current,
+                                             Next_Block    => Next_Block_ID);
+
+            if Is_Reversing_Point (Hall_Sensor) then
+               Current_Polarity := Opposite (Current_Polarity);
+            end if;
+
+            Recursive_Block (Current   => Next_Block_ID,
+                             Loco      => Loco,
+                             Direction => Current_Polarity,
+                             Blocks    => Blocks,
+                             Turnouts  => Turnouts,
+                             Success   => Success);
+
+         elsif Next_Terminator = Deadend then
+            Success := False;
+         else
+            Success := False;
+         end if;
+      end if;
+
+      if Success then
+         Next_Terminator := Retrieve_Terminator
+           (Block     => Current,
+            Direction => Opposite (Direction));
+         if Next_Terminator = Turnout then
+            Current_Turnout_ID :=
+              Retrieve_Turnout_ID (Block     => Current,
+                                   Direction => Opposite (Direction));
+            Next_Block_ID :=
+              Retrieve_Turnout_Block_ID (Direction => Left,
+                                         Turnout   => Current_Turnout_ID);
+            loop
+               exit when Blocks.Items (Current_Block_Index).Block = Current;
+               Current_Block_Index := Current_Block_Index + 1;
+            end loop;
+
+            if Blocks.Items (Blocks.Items'First).Block /= Current then
+
+               Turnouts.Size := Turnouts.Size + 1;
+               Turnouts.Items (Turnouts.Size).Turnout := Current_Turnout_ID;
+
+               if Next_Block_ID = Blocks.Items (Current_Block_Index - 1).Block
+               then
+                  Turnouts.Items (Turnouts.Size).Direction := Left;
+               else
+                  Turnouts.Items (Turnouts.Size).Direction := Right;
+               end if;
+            end if;
+         end if;
+
+      else
+         Blocks.Size := Blocks.Size - 1;
+      end if;
+   end Recursive_Block;
+
+------------------------------------------------------------------------------
+
+   procedure Blocks_Beneath (Caboose  : in     Block_ID;
+                             Loco     : in     Block_ID;
+                             Blocks   :    out Block_List;
+                             Turnouts :    out Turnout_List;
+                             Success  :    out Boolean) is
+
+      Temporary_Turnout : Turnout_Rec;
+
+   begin
+      if Caboose = Loco then
+         Success := False;
+
+      else
+         Recursive_Block (Current   => Caboose,
+                          Loco      => Loco,
+                          Direction => Normal,
+                          Blocks    => Blocks,
+                          Turnouts  => Turnouts,
+                          Success   => Success);
+
+         if not Success then
+            Recursive_Block (Current   => Caboose,
+                             Loco      => Loco,
+                             Direction => Reversed,
+                             Blocks    => Blocks,
+                             Turnouts  => Turnouts,
+                             Success   => Success);
+         end if;
+
+         --Reverse turnout list to correct order
+         for Turnout in 1 .. Turnouts.Size / 2 loop
+            Temporary_Turnout := Turnouts.Items (Turnout);
+            Turnouts.Items (Turnout) :=
+                Turnouts.Items (Turnouts.Size - Turnout + 1);
+            Turnouts.Items (Turnouts.Size - Turnout + 1) := Temporary_Turnout;
+         end loop;
+      end if;
+   end Blocks_Beneath;
+
+end Layout.Search;

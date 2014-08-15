@@ -1,0 +1,20 @@
+--Locomotivation
+--Shaun Meyer
+
+Test Plan for the DAC
+
+Special Equipment : Hand Controller
+Goal              : Make sure the dac makes the correct conversion
+Setup             : None
+Implementation    : run dac_test.adb
+Expected Results  : Depending on the channel and the volt number, we confirm that the write was a success. Initial volt values on all channels should be 0, and changing one channel's volt value should not affect another channel's volt value.
+Testing Method    : This is not an exhaustive test. We will test edge cases for each channel.
+
+For each channel:
+	Confirm that initial value is 0
+	Set value to 5
+	Set value to 0
+	Set value to -5
+	Confirm that all channels stayed on their assigned value without being impacted by a write to another channel 
+
+

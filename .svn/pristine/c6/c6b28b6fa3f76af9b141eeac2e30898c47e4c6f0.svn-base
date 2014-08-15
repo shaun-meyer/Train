@@ -1,0 +1,92 @@
+-- Locomotivation
+-- Mike Miller
+
+with DoubleTalk;
+use DoubleTalk;
+with Ada.Strings.Bounded;
+
+procedure Doubletalk_Test is
+   procedure Overload_Queue is
+   begin
+      declare
+         task type Worker_Task (Phrase :
+                                Phrase_Strings.Bounded_String;
+                                Voice  : Voice_Range);
+         task body Worker_Task is
+         begin
+            DoubleTalk.Speak (Phrase => Phrase,
+                              Voice  => Voice);
+         end Worker_Task;
+         worker1 : Worker_Task (Phrase =>
+                                  "make like a train. and get outa here",
+                                Voice  => Biff);
+         worker2 : Worker_Task (Phrase => "Skip this test",
+                                Voice  => Skip);
+         worker3 : Worker_Task (Phrase => "I'm Robo the Hobo",
+                                Voice  => Robo);
+         worker4 : Worker_Task (Phrase => "Pete was here before",
+                                Voice  => Pete);
+         worker5 : Worker_Task (Phrase => "hi guys i am randy",
+                                Voice  => Randy);
+         worker6 : Worker_Task (Phrase => "Join the Dark side",
+                                Voice  => Vader);
+         worker7 : Worker_Task (Phrase => "it's working! it's working!",
+                                Voice  => Vader);
+      begin
+         null;
+      end;
+   end Overload_Queue;
+
+   procedure Queue_List is
+   begin
+      declare
+         task type Worker_Task (Phrase :
+                                Ada.Strings.Bounded.Generic_Bounded_Length;
+                                Voice  : Voice_Range);
+         task body Worker_Task is
+         begin
+            DoubleTalk.Speak (Phrase => Phrase,
+                              Voice  => Voice);
+         end Worker_Task;
+         worker1 : Worker_Task (Phrase => "this is Paul",
+                                Voice  => Paul);
+         worker2 : Worker_Task (Phrase => "luke i am your father",
+                                Voice  => Vader);
+         worker3 : Worker_Task (Phrase => "bob bob bob bob bob er ann",
+                                Voice  => Bob);
+         worker4 : Worker_Task (Phrase => "the is Pete",
+                                Voice  => Pete);
+         worker5 : Worker_Task (Phrase => "hi guys i am randy",
+                                Voice  => Randy);
+      begin
+         null;
+      end;
+   end Queue_List;
+
+   procedure Remaining_List is
+   begin
+      declare
+         task type Worker_Task (Phrase :
+                                Ada.Strings.Bounded.Generic_Bounded_Length;
+                                Voice  : Voice_Range);
+         task body Worker_Task is
+         begin
+            DoubleTalk.Speak (Phrase => Phrase,
+                              Voice  => Voice);
+         end Worker_Task;
+         worker1 : Worker_Task (Phrase => "hello mcfly",
+                                Voice  => Biff);
+         worker2 : Worker_Task (Phrase => "skippidy do da",
+                                Voice  => Skip);
+         worker3 : Worker_Task (Phrase => "robo bobo cop",
+                                Voice  => Robo);
+      begin
+         null;
+      end;
+   end Remaining_List;
+
+begin
+   Queue_List;
+   Remaining_List;
+   Overload_Queue;
+end Doubletalk_Test;

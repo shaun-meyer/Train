@@ -1,0 +1,124 @@
+--Locomotivation
+--Shaun Meyer
+with Ada.Command_line;
+with Ada.Text_IO;
+with Ada.Integer_Text_IO;
+with Ada.IO_Exceptions;
+with Layout;
+with Layout.Search; use Type Layout.Search.Turnout_Array;
+
+procedure Test_Blocks_Beneath is
+   package Block_IO is new Ada.Text_IO.Integer_IO(Layout.Block_ID);
+   package Turnout_IO is new Ada.Text_IO.Integer_IO(Layout.Turnout_ID);
+
+   Read_Turnout       :  Layout.Turnout_ID;
+   Read_Block         :  Layout.Block_ID;
+   Loco               :  Layout.Block_ID;
+   Caboose            :  Layout.Block_ID;
+   Blocks_Expected    :  Layout.Search.Block_List(10);
+   Turnouts_Expected  :  Layout.Search.Turnout_List(10);
+   File               :  Ada.Text_IO.File_Type;
+
+   Blocks_Found       :  Layout.Search.Block_List(10);
+   Turnouts_Found     :  Layout.Search.Turnout_List(10);
+   Success_Found      :  Boolean;
+
+begin
+   Ada.Text_IO.Open(File => File,
+                    Mode => Ada.Text_IO.In_File,
+                    Name => "searchTest.txt");
+
+   while not Ada.Text_IO.End_Of_File (File) loop
+
+      while (not Ada.Text_IO.End_Of_Line(File => File)) loop
+
+         Block_IO.Get(File  => File,
+                      Item  => Loco);
+      end loop;
+
+
+      Ada.Text_IO.Skip_Line(File);
+
+
+      --Caboose_Loop:
+      while not Ada.Text_IO.End_Of_Line(File => File) loop
+
+         Block_IO.Get(File  => File,
+                      Item  => Caboose);
+      end loop;
+      Ada.Text_IO.Skip_Line(File);
+
+
+      Layout.Search.Blocks_Beneath(Loco     => Loco,
+                                   Caboose  => Caboose,
+                                   Blocks   => Blocks_Found,
+                                   Turnouts => Turnouts_Found,
+                                   Success  => Success_Found);
+
+      Blocks_Loop:
+      while (not Ada.Text_IO.End_Of_Line(File => File)) loop
+         Block_IO.Get(File  => File,
+                      Item  => Read_Block);
+         Blocks_Expected.Size := Blocks_Expected.Size + 1;
+         Blocks_Expected.Items (Blocks_Expected.Size).Block := Read_Block;
+      end loop Blocks_Loop;
+      Ada.Text_IO.Skip_Line(File);
+
+      Turnouts_Loop:
+      while (not Ada.Text_IO.End_Of_Line(File => File)) loop
+         Turnout_IO.Get(File  => File,
+                        Item  => Read_Turnout);
+         Turnouts_Expected.Size := Turnouts_Expected.Size + 1;
+         Turnouts_Expected.Items (Turnouts_Expected.Size).Turnout:= Read_Turnout;
+      end loop Turnouts_Loop;
+      Ada.Text_IO.Skip_Line(File);
+
+      if Success_Found then
+         Ada.Text_IO.Put_Line("true");
+      else
+         Ada.Text_IO.Put_Line("false");
+      end if;
+
+      Ada.Text_IO.Put_Line("Blocks Found");
+      for Count in Blocks_Found.Items'First .. Blocks_Found.Size loop
+         Block_IO.Put (Item => Blocks_Found.Items(Count).Block);
+      end loop;
+
+      Ada.Text_IO.New_Line(1);
+      Ada.Text_IO.Put_Line("Turnouts Found");
+      for Count in Turnouts_Found.Items'First .. Turnouts_Found.Size loop
+         Turnout_IO.Put (Item => Turnouts_Found.Items(Count).Turnout);
+      end loop;
+
+      Ada.Text_IO.New_Line(1);
+      Ada.Text_IO.Put_Line("Blocks Expected");
+      for Count in Blocks_Expected.Items'First .. Blocks_Expected.Size loop
+         Block_IO.Put (Item => Blocks_Expected.Items(Count).Block);
+      end loop;
+
+      Ada.Text_IO.New_Line(1);
+      Ada.Text_IO.Put_Line("Turnouts Expected");
+      for Count in Turnouts_Expected.Items'First .. Turnouts_Expected.Size loop
+         Turnout_IO.Put (Item => Turnouts_Expected.Items(Count).Turnout);
+      end loop;
+
+      if Turnouts_Expected.Items = Turnouts_Found.Items then
+         Ada.Text_IO.Put_Line("Success!");
+      end if;
+
+      --Block_IO.Put(Loco);
+      --Block_IO.Put(Caboose);
+
+      Blocks_Expected.Size := 0;
+      Blocks_Expected.Items := ();
+
+end loop;
+
+
+   --Call procedure with data
+   --Check result from file
+   --Compare expected result vs actual result
+   --Print out success or fail
+
+
+end Test_Blocks_Beneath;

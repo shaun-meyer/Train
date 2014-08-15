@@ -1,0 +1,14 @@
+-- Locomotivation
+-- Shaun Meyer
+
+with Common_Units;
+package DAC is
+-- Specification of a make-believe digital to analog converter
+
+   type    Channel_Number is range 0..7;
+   subtype Output_Volts   is Common_Units.Volts range 0.0 .. 5.0;
+
+   procedure Write (Channel : in Channel_Number;   -- Which channel
+                    Value   : in Output_Volts);    -- Output value
+   -- Sets the voltage on the given channel
+end DAC;

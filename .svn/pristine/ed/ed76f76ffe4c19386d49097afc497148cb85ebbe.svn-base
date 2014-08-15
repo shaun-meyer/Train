@@ -1,0 +1,21 @@
+11      1        -1               -1 
+1       1        -1               -1 
+23      19       21 20            21 20 19
+9       8        -1               12
+13      17       14 15 16         2 4 5 7
+40      1        7 8 9 10 11      26 25 24 23 10 12 13 15
+2       31       13               3 2 1
+
+Test Plan for the Layout.Search
+Test will be run by executing the searching algorithm, and comparing expected results vs actual.
+Expected results will be obtained by hardcoding in test values, based on an examination of the map.
+This test cannot be run exhaustively, as there are thousands of different possibilities.
+Instead, the border cases will be run: distance of 0, distance of 1, medium distance, and large distance.
+It was also test for special cases, such as a turnout that leads to a turnout.
+The test should handle all of these cases. 
+In the situation of multiple paths on the layout, the algorithm should find all of them.
+
+
+
+--include if on end of line
+Loco   Caboose   BlocksBeneath    TurnoutsBeneath  

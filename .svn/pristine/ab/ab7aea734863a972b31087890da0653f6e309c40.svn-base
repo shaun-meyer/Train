@@ -1,0 +1,30 @@
+--Locomotivation
+--Mike Miller
+
+Test Plan for the Cabs
+
+Special Equipment : None
+Goal              : Make Sure the limits for blocks are set correctly
+Setup             : None
+Implementation    : run cabs_test.adb
+Testing Method    : This is not an exhaustive test. we are testing the edge cases.
+
+Set_Limit		Expected Result(Get_Limit Function)
+Cab # 	Value		Value
+1	100		100
+1	0		0
+6	100		100
+6	0		0
+
+Set			Expected Result (Get Funtion)
+Cab # 	Value	Limit	Value
+1	80	100	80
+1	80	50	50
+6	80	100	80
+6	80	50	50
+
+(Changing Limit when Value is already Set)
+(Set_Limit)
+Cab #	Value	Current Set Value	expected Get Value
+1	50	80			50
+6	50	80			50

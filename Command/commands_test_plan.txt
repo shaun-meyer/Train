@@ -1,0 +1,60 @@
+--Locomotivation
+--Mike Miller
+
+Test Plan for the Commands
+
+Special Equipment : None
+Goal              : Make sure get procedure returns correct Data
+Setup             : None
+Implementation    : run commands_Test.adb
+Expected Results  : depending on the output the value of the enumeration will be displayed
+Testing Method    : this is an exhaustive test each Command_Type will be tested
+
+   type Command_Type is (Stop_All, Stop, Go, Left, Right,
+                         Free, Skill, Restart, Quit, Error);
+
+Data:
+Stop_All:
+command entered    output
+" "                Stop_All
+
+Stop:
+command entered    output
+1s                 Stop 1
+
+Go;
+command entered    output
+1g                 Go 1
+
+Left:
+command entered    output
+1l                 Left 1
+10l                Left 10
+
+Right:
+command entered    output
+10r                Right 10
+1r                 Right 1
+
+Free:
+command entered    output
+1f                 Free 1
+10f                Free 10
+
+Skill:
+command entered    output
+1e                 Skill 1
+
+Restart:
+command entered    output
+r		   Restart
+
+Quit:
+command entered    output
+q                  Quit
+
+Error
+z		   Error
+1                  Error
+---                Error
+command entered    output

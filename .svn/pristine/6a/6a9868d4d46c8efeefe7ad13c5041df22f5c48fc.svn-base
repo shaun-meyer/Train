@@ -1,0 +1,67 @@
+project Locomotivation is
+
+   type Target_Type is
+      ("Windows", "MaRTE", "Linux");
+   Target : Target_Type := external ("Target", "Linux");
+
+   case Target is
+
+      when "Windows" =>
+         for Source_Dirs use (".", "Layout", "Controllers", "Dispatcher", "Port_IO");
+         for Object_Dir use "bin/";
+         for Source_Files use ("controller_test.adb", "button-press-count.adb", "controller.adb", "controller.ads", "dispatcher.adb", "layout.ads", "layout-search.adb", "layout-search.ads", "port-io.adb", "port-io.ads", "test_layout.adb");
+
+      when "MaRTE" =>
+         for Source_Dirs use (".", "Layout", "Controllers", "Dispatcher", "Port_IO");
+         for Object_Dir use "bin/";
+         for Source_Files use ("controller_test.adb", "button-press-count.adb", "controller.adb", "controller.ads", "dispatcher.adb", "layout.ads", "layout-search.adb", "layout-search.ads", "port-io.adb", "port-io.ads", "test_layout.adb");
+
+      when "Linux" =>
+         for Source_Dirs use (".", "Layout", "Dispatcher", "Controllers", "Port_IO");
+         for Source_Files use ("button-press-count.adb", "controller.adb", "controller.ads", "controller_test.adb", "dispatcher.adb", "layout.adb", "layout.ads", "layout-search.adb", "layout-search.ads", "layout-search-test.adb", "port-io.adb", 
+            "port-io.ads", "test_layout.adb");
+         for Main use ("dispatcher.adb");
+         for Object_Dir use "bin/";
+   end case;
+
+   package Ide is
+      for Vcs_Kind use "Subversion";
+      for Vcs_Repository_Root use "https://student.cs.uni.edu/svn/Trainlab-Spring14-Locomotivation";
+
+      case Target is
+
+         when "Windows" =>
+
+         when "MaRTE" =>
+            for Compiler_Command ("ada") use "mgnatmake";
+
+         when "Linux" =>
+
+      end case;
+   end Ide;
+
+   package Builder is
+
+      case Target is
+
+         when "Windows" =>
+            for Default_Switches ("ada") use ("-C", "-g");
+
+         when "MaRTE" =>
+            for Default_Switches ("ada") use ("-C", "-g", "-x", "-o", "bin/mprogram");
+
+         when "Linux" =>
+            for Default_Switches ("ada") use ("-C", "-g", "--RTS=native");
+      end case;
+   end Builder;
+
+   package Compiler is
+      for Default_Switches ("ada") use ("-gnaty3M80abeklnprStx", "-gnatwa", "-gnato", "-fstack-check", "-g", "-gnat05");
+   end Compiler;
+
+   package Pretty_Printer is
+      for Default_Switches ("ada") use ("-M80", "-c3");
+   end Pretty_Printer;
+
+end Locomotivation;
+
